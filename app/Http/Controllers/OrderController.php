@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\FoodItem;
 use Carbon\Carbon;
+use App\CalendarCapacity;
+
 class OrderController extends Controller
 {
     /**
@@ -47,6 +49,7 @@ class OrderController extends Controller
      */
     public function show($foodlist)
     {
+        $date_now = Carbon::now()->format('Y-m-d');
         $convertFoodList = json_decode($foodlist);
         $sidedishlist = [];
         
@@ -61,9 +64,12 @@ class OrderController extends Controller
             array_push($sidedishlist, $sd);
         }
 
+        $calendar_capacity = CalendarCapacity::where('from_date', '<=', $date_now)->where('to_date', '>=', $date_now)->first();
+
         $detailsArr = array(
             'meat_list' => $meatlist,
-            'sidedish_list' => $sidedishlist
+            'sidedish_list' => $sidedishlist,
+            'calendar_capacity' => $calendar_capacity,
         );
 
         return view('pages.order')->with($detailsArr);

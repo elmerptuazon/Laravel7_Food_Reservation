@@ -83,24 +83,29 @@
     </div>
 @endforeach
 
-<div class="container">
-    <div class="row">
-        <div class="col-12 text-center pt-2 pb-2">
-        <strong>ATTENTION</strong> <i class="fa fa-exclamation-triangle" style="color:#b50e35"></i>  
-        </div>
-        <div class="col-12 text-center pb-2">
-            Due to the high-demand of Sunday Smoker BBQs,
-            the next date we can deliver will be on 
-            October 23, 2020
-        </div>
-       
-        <div class="col-12 text-center">
-            To continue to order, tap on Reserve & Pay below
-            or Select a <a href="#"><strong>Different Date</strong></a>
+@isset($calendar_capacity)
+    @if(!$calendar_capacity->active)
+    <div id="capacity_date" data-field-id="{{$calendar_capacity->to_date}}" ></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center pt-2 pb-2">
+            <strong>ATTENTION</strong> <i class="fa fa-exclamation-triangle" style="color:#b50e35"></i>  
+            </div>
+            <div class="col-12 text-center pb-2">
+                Due to the high-demand of Sunday Smoker BBQs,
+                the next date we can deliver will be on 
+                <u>{{ \Carbon\Carbon::parse($calendar_capacity->to_date)->addDays(1)->format('F d, Y') }}</u>
+            </div>
+        
+            <div class="col-12 text-center">
+                To continue to order, tap on Reserve & Pay below
+                or Select a <strong><span style="color:blue" class="datepicker"><u>Different Date</u></span></strong>
+                <input placeholder="Selected date" type="text" style="text-align:center;" class="form-control datepicker">
+            </div>
         </div>
     </div>
-</div>
-
+    @endif
+@endisset
 
 </div>
 <div class="container" style="padding-top: 20%">
@@ -113,3 +118,28 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+$( document ).ready(function() {
+
+    let capacity_date = $('#capacity_date').data("field-id");
+
+    $(".datepicker").daterangepicker({
+        singleDatePicker: true,
+        opens: 'center',
+        drops: "auto",
+        minDate: capacity_date ? moment(capacity_date).add(1, 'days').format("MMMM DD, YYYY") : moment().format("MMMM DD, YYYY"),
+        applyButtonClasses: "btn-warning",
+        // autoApply: true,
+        locale: {
+            format: "MMMM DD, YYYY",
+            applyLabel: "Confirm",
+        },
+    }, function(start, end, label) {
+        console.log("A new date selection was made: "+ label+ ' ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+  });
+    
+});
+</script>
+@endpush
