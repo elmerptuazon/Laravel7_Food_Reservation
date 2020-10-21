@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'MainController@index');
 Route::resources([
     'food' => FoodItemController::class,
+    'order' => OrderController::class,
 ]);
 
 Auth::routes();
