@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\FoodItem;
-
+use Carbon\Carbon;
 class OrderController extends Controller
 {
     /**
@@ -65,7 +65,7 @@ class OrderController extends Controller
             'meat_list' => $meatlist,
             'sidedish_list' => $sidedishlist
         );
-        
+
         return view('pages.order')->with($detailsArr);
     }
 

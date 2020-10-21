@@ -44,7 +44,7 @@
         <div class="col-3 pl-0">
             <div class="row">
                 <div class="col-12">
-                <small><strong><span>&#x20B1;</span> {{ number_format($meat_list->price,2)}}</strong></small>
+                <small><strong><span>&#x20B1;</span> {{ number_format($meat_list->unit_price,2)}}</strong></small>
                 </div>
             </div>
         </div>
@@ -76,7 +76,7 @@
         <div class="col-3 pl-0">
             <div class="row">
                 <div class="col-12">
-                <small><strong><span>&#x20B1;</span> {{ number_format($val->price,2)}}</strong></small>
+                <small><strong><span>&#x20B1;</span> {{ number_format($val->unit_price,2)}}</strong></small>
                 </div>
             </div>
         </div>

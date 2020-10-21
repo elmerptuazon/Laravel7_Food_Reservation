@@ -88,13 +88,14 @@ $( document ).ready(function() {
 
     let food_objects = {};
     food_objects.meatId = {!! json_encode($food->id) !!};
-    food_objects.meatOrder = $('#meat_{{$food->id}}').val();
+    food_objects.meatOrder = 1;
+    FOOD_LIST['meat'][food_objects.meatId] = food_objects.meatOrder
     $(".sumofmeat").bind("click", function(){
         $('#meatleft').text(10 - $('#meat_{{$food->id}}').val());
         food_objects.meatId = {!! json_encode($food->id) !!};
         food_objects.meatOrder = $('#meat_{{$food->id}}').val();
+        FOOD_LIST['meat'][food_objects.meatId] = food_objects.meatOrder
     });
-    FOOD_LIST['meat'][food_objects.meatId] = food_objects.meatOrder
 
     let sidedishArray = {!! json_encode($sidedish) !!}
     
@@ -109,7 +110,6 @@ $( document ).ready(function() {
             }else {
                 food_objects['sidedishid_' + sidedishArray[i].id] = sidedishArray[i].id
                 food_objects['sidedishorder_' + sidedishArray[i].id] = 0;
-
             }
 
             FOOD_LIST['sidedish'][food_objects['sidedishid_' + sidedishArray[i].id]] = food_objects['sidedishorder_' + sidedishArray[i].id]
@@ -117,7 +117,6 @@ $( document ).ready(function() {
     }
     
     $('#submitOrder').on('click', function() {
-        // console.log("http://localhost:8000/order/" + JSON.stringify(FOOD_LIST))
         window.location.href = "http://localhost:8000/order/" + JSON.stringify(FOOD_LIST);
     })
 });

@@ -4,11 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Order extends Model
+class Payment extends Model
 {
-    protected $table = 'order';
+    protected $table = 'payments';
 
     protected $fillable = [
-        'userid', 'total_price'
+        'userid', 'orderid', 'amount'
     ];
 }

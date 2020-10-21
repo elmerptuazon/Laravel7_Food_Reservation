@@ -17,10 +17,11 @@ class CreateFoodItemTable extends Migration
             $table->id();
             $table->string('name');
             $table->enum('type', ['meat', 'sidedish']);
-            $table->longText('description');
-            $table->string('weight');
-            $table->string('procedure');
-            $table->float('price', 8, 2);
+            $table->longText('description')->nullable();
+            $table->string('weight')->nullable();
+            $table->string('procedure')->nullable();
+            $table->integer('max_pcs_per_tray');
+            $table->float('unit_price', 8, 2);
             $table->string('image')->default('');
             $table->string('image_type')->default('');
             $table->timestamps();
