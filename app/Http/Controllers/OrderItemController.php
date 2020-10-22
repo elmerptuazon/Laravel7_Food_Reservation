@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\FoodItem;
-use Carbon\Carbon;
-use App\CalendarCapacity;
+use App\OrderItem;
 use App\Order;
+use Carbon\Carbon;
 
-class OrderController extends Controller
+class OrderItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +16,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::orderBy('id', 'desc')->paginate(3);
-        return view('pages.admin.order', ['orders' => $orders]);
+        //
     }
 
     /**
@@ -48,32 +46,12 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($foodlist)
+    public function show($date)
     {
-        $date_now = Carbon::now()->format('Y-m-d');
-        $convertFoodList = json_decode($foodlist);
-        $sidedishlist = [];
-        
-        foreach($convertFoodList->meat as $id=>$val) {
-            $meatlist = FoodItem::where('type', 'meat')->where('id', $id)->first();
-            $meatlist->order = $val;
-        }
-
-        foreach($convertFoodList->sidedish as $id=>$val) {
-            $sd = FoodItem::where('type', 'sidedish')->where('id', $id)->first();
-            $sd->order = $val;
-            array_push($sidedishlist, $sd);
-        }
-
-        $calendar_capacity = CalendarCapacity::where('from_date', '<=', $date_now)->where('to_date', '>=', $date_now)->first();
-
-        $detailsArr = array(
-            'meat_list' => $meatlist,
-            'sidedish_list' => $sidedishlist,
-            'calendar_capacity' => $calendar_capacity,
-        );
-
-        return view('pages.order')->with($detailsArr);
+        $dateSelect = Carbon::parse($date)->format('Y-m-d');
+        $orderitems = OrderItem::whereDate('created_at', $dateSelect)->with(['order'])->paginate(3);
+  
+        return view('pages.admin.orderitems', ['orderitems' => $orderitems]);
     }
 
     /**

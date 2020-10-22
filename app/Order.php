@@ -11,4 +11,8 @@ class Order extends Model
     protected $fillable = [
         'userid', 'total_price'
     ];
+
+    public function orderitem() {
+        return $this->hasMany('App\OrderItem', 'orderid');
+    }
 }

@@ -14,11 +14,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'MainController@index');
-Route::resources([
-    'food' => FoodItemController::class,
-    'order' => OrderController::class,
+
+Route::resource('food', FoodItemController::class,)->only([
+    'show',
 ]);
+Route::resource('order', OrderController::class,)->only([
+    'show',
+]);
+
+Route::group(['prefix'=>'admin'], function() {
+    Route::resources([
+        'food' => FoodItemController::class,
+        'order' => OrderController::class,
+        'order_items' => OrderItemController::class,
+        'calendar_capacity' => CalendarCapacityController::class,
+    ]);
+});
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
