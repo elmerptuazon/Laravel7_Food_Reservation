@@ -16,7 +16,7 @@ class CreateCalendarCapacitiesTable extends Migration
         Schema::create('calendar_capacities', function (Blueprint $table) {
             $table->id();
             $table->date('from_date');
-            $table->date('to_date');
+            $table->date('to_date')->nullable();
             $table->float('tray_capacity', 8, 2);
             $table->float('tray_remaining', 8, 2)->nullable();
             $table->integer('active')->nullable();

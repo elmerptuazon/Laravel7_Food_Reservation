@@ -131,13 +131,13 @@ $( document ).ready(function() {
         drops: "auto",
         minDate: capacity_date ? moment(capacity_date).add(1, 'days').format("MMMM DD, YYYY") : moment().format("MMMM DD, YYYY"),
         applyButtonClasses: "btn-warning",
-        // autoApply: true,
+        autoApply: true,
         locale: {
             format: "MMMM DD, YYYY",
             applyLabel: "Confirm",
         },
     }, function(start, end, label) {
-        console.log("A new date selection was made: "+ label+ ' ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        // console.log("A new date selection was made: "+ label+ ' ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
   });
     
 });

@@ -7,6 +7,8 @@ use App\FoodItem;
 use Carbon\Carbon;
 use App\CalendarCapacity;
 use App\Order;
+use App\OrderItem;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -76,6 +78,11 @@ class OrderController extends Controller
         return view('pages.order')->with($detailsArr);
     }
 
+    public function showOrder($id) {
+        $order = Order::where('id', $id)->first();
+        return view('pages.admin.editorder', ['order' => $order]);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -96,7 +103,24 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validatedData = Validator::make($request->all(), [
+            'paid' => 'required|',
+            'totalfee' => 'required|',
+            'date' => 'required',
+        ]);
+
+        if ($validatedData->fails()) {
+            return response()->view('errors.500', [], 500);
+        }
+
+        Order::where('id', $id)->update([
+            'paymentid' => $request->paid,
+            'delivery_fee' => $request->deliveryfee,
+            'total_price' => $request->totalfee,
+            'created_at'=> $request->date
+        ]);
+
+        return response()->json(['status'=>'success']);
     }
 
     /**
@@ -107,6 +131,8 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Order::where('id', $id)->delete();
+        OrderItem::where('orderid', $id)->delete();
+        return response()->json(['status'=>'success']);
     }
 }

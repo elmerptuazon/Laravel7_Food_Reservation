@@ -29,6 +29,7 @@ Route::group(['prefix'=>'admin'], function() {
         'order_items' => OrderItemController::class,
         'calendar_capacity' => CalendarCapacityController::class,
     ]);
+    Route::get('/order/details/{id}', 'OrderController@showOrder');
 });
 
 Auth::routes();

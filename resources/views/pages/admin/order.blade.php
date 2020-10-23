@@ -6,11 +6,17 @@
     padding-left: 0;
     padding-right: 0;
 }
+.modal-content {
+  top: 30vh;
+}
 
 </style>
 @endsection
 
 @section('content')
+<div class="alert alert-success successText" style="display:none">
+    Success
+</div>
 <div class="container container-remove-padding">
 <div style="overflow: auto;">
 <table class="table">
@@ -29,15 +35,30 @@
   <tbody>
   @foreach($orders as $order)
   <tr>
-      <th><i class="fa fa-pencil-square-o" aria-hidden="true"></i></th>
+      <th><a href="/admin/order/details/{{$order->id}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></th>
       <td><small>{{ \Carbon\Carbon::parse($order->created_at)->format('m-d-Y') }}</small></td>
       <td>{{$order->fname}}</td>
       <td>{{$order->lname}}</td>
       <td>{{ $order->paymentid ? 'Yes' : 'No' }}</td>
       <td>{{ number_format($order->delivery_fee,2)}}</td>
       <td>{{ number_format($order->total_price,2)}}</td>
-      <td><i class="fa fa-trash-o" aria-hidden="true"></i></td>
+      <td><a data-toggle="modal" data-target="#deleteModal{{$order->id}}"><i class="fa fa-trash-o" aria-hidden="true"></i></a></td>
     </tr>
+    <div class="modal fade" id="deleteModal{{$order->id}}" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-body">
+            <p style="text-align:center">ARE YOU SURE?</p>
+          </div>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" id="{{$order->id}}" class="btn btn-danger deleteItem" data-dismiss="modal">Delete</button>
+        </div>
+        
+      </div>
+    </div>
+
   @endforeach
   </tbody>
 </table>
@@ -45,3 +66,26 @@
 {{ $orders->links() }}
 </div>
 @endsection
+
+@push('scripts')
+<script>
+$( document ).ready(function() {
+  $('.deleteItem').on('click', function() {
+    // console.log("{{ url('admin/calendar_capacity/')}}"+ '/' + this.id,)
+    $.ajax( {
+            type: "DELETE",
+            url: "{{ url('admin/order/')}}"+ '/' + this.id,
+            success: function(data) {
+              console.log(data)
+                if(data.status) {
+                    location.reload();
+                    $('.successText').show();
+                    setTimeout(function(){ $('.successText').fadeOut() }, 2000);
+                }
+            }
+        });
+  })
+    
+});
+</script>
+@endpush

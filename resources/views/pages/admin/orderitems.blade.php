@@ -25,6 +25,7 @@
   </thead>
   <tbody>
   @foreach($orderitems as $orderitem)
+  @isset($orderitem->order)
   <tr>
       <td><small>{{ ucwords($orderitem->foodname) }}</small></td>
       <td><small>{{ ucwords($orderitem->order->fname) }} {{ucwords($orderitem->order->lname)}}</small></td>
@@ -32,6 +33,7 @@
       <td><small>{{ number_format($orderitem->order->delivery_fee,2) }}</small></td>
       <td><small>{{ number_format($orderitem->order->total_price,2) }}</small></td>
     </tr>
+  @endisset
   @endforeach
   </tbody>
 </table>

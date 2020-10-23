@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\CalendarCapacity;
+use Illuminate\Support\Facades\Validator;
 
 class CalendarCapacityController extends Controller
 {
@@ -15,8 +16,9 @@ class CalendarCapacityController extends Controller
     public function index()
     {   
         $calendarcap = CalendarCapacity::orderBy('from_date', 'desc')->paginate(3);
+        $dateLatest = CalendarCapacity::orderBy('from_date', 'desc')->first();
   
-        return view('pages.admin.calendarcapacity', ['calendarcaps' => $calendarcap]);
+        return view('pages.admin.calendarcapacity', ['calendarcaps' => $calendarcap, 'calendarlatest' => $dateLatest]);
     }
 
     /**
@@ -37,7 +39,24 @@ class CalendarCapacityController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        $validatedData = Validator::make($request->all(), [
+            'traycap' => 'required|numeric',
+            'date' => 'required',
+        ]);
+
+        if ($validatedData->fails()) {
+            return response()->view('errors.500', [], 500);
+        }
+
+        CalendarCapacity::create([
+            'from_date' => $request->date,
+            'to_date' => $request->date,
+            'tray_capacity' => $request->traycap
+        ]);
+
+        // return redirect()->back()->with('status', 'success');
+        return response()->json(['status'=>'success']);
     }
 
     /**
@@ -48,7 +67,10 @@ class CalendarCapacityController extends Controller
      */
     public function show($id)
     {
-        //
+    
+        $details = CalendarCapacity::where('id', $id)->first();
+        // return response()->json($details);
+        return view('pages.admin.editcalendarcapacity', ['calendarcap'=>$details]);
     }
 
     /**
@@ -71,7 +93,23 @@ class CalendarCapacityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validatedData = Validator::make($request->all(), [
+            'traycap' => 'required|numeric',
+            'date' => 'required',
+        ]);
+
+        if ($validatedData->fails()) {
+            return response()->view('errors.500', [], 500);
+        }
+
+        CalendarCapacity::where('id', $id)->update([
+            'from_date' => $request->date,
+            'to_date' => $request->date,
+            'tray_capacity' => $request->traycap,
+            'tray_remaining'=> $request->trayremaining
+        ]);
+
+        return response()->json(['status'=>'success']);
     }
 
     /**
@@ -82,6 +120,7 @@ class CalendarCapacityController extends Controller
      */
     public function destroy($id)
     {
-        //
+        CalendarCapacity::where('id', $id)->delete();
+        return response()->json(['status'=>'success']);
     }
 }
