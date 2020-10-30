@@ -18,10 +18,10 @@ class CalendarCapacitySeeder extends Seeder
 
         CalendarCapacity::create([
             'from_date'=>$date_now,
-            'to_date'=>$date_next,
+            'to_date'=>$date_now,
             'tray_capacity'=>5,
-            'tray_remaining'=>null,
-            'active'=>null,
+            'tray_remaining'=>5,
+            'active'=>1,
         ]);
     }
 }

@@ -35,14 +35,14 @@
   <tbody>
   @foreach($orders as $order)
   <tr>
-      <th><a href="/admin/order/details/{{$order->id}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></th>
+      <th><a href="/admin/order/details/{{$order->id}}" style="color:#b50e35;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></th>
       <td><small>{{ \Carbon\Carbon::parse($order->created_at)->format('m-d-Y') }}</small></td>
       <td>{{$order->fname}}</td>
       <td>{{$order->lname}}</td>
-      <td>{{ $order->paymentid ? 'Yes' : 'No' }}</td>
+      <td>{{ $order->status == 1 ? 'Yes' : 'No' }}</td>
       <td>{{ number_format($order->delivery_fee,2)}}</td>
       <td>{{ number_format($order->total_price,2)}}</td>
-      <td><a data-toggle="modal" data-target="#deleteModal{{$order->id}}"><i class="fa fa-trash-o" aria-hidden="true"></i></a></td>
+      <td><a data-toggle="modal" data-target="#deleteModal{{$order->id}}" style="color:#b50e35;"><i class="fa fa-trash-o" aria-hidden="true"></i></a></td>
     </tr>
     <div class="modal fade" id="deleteModal{{$order->id}}" role="dialog">
       <div class="modal-dialog">

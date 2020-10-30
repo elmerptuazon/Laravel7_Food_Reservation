@@ -44,7 +44,7 @@ class CalendarCapacityController extends Controller
             'traycap' => 'required|numeric',
             'date' => 'required',
         ]);
-
+        
         if ($validatedData->fails()) {
             return response()->view('errors.500', [], 500);
         }
@@ -52,9 +52,10 @@ class CalendarCapacityController extends Controller
         CalendarCapacity::create([
             'from_date' => $request->date,
             'to_date' => $request->date,
-            'tray_capacity' => $request->traycap
+            'tray_capacity' => $request->traycap,
+            'tray_remaining' => $request->traycap,
+            'active'=>1
         ]);
-
         // return redirect()->back()->with('status', 'success');
         return response()->json(['status'=>'success']);
     }

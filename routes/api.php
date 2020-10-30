@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::any('/paymaya/checkout/success', 'Api\PaymayaWebHooksController@success')->name('WebhooksPaymayaSuccess');
+Route::any('/paymaya/checkout/error', 'Api\PaymayaWebHooksController@error')->name('WebhooksPaymayaError');
+Route::any('/paymaya/checkout/dropout', 'Api\PaymayaWebHooksController@dropout')->name('WebhooksPaymayaDropout');

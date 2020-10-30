@@ -19,8 +19,24 @@ Route::resource('food', FoodItemController::class,)->only([
     'show',
 ]);
 Route::resource('order', OrderController::class,)->only([
-    'show',
+    'show', 'store',
 ]);
+Route::resource('payment', PaymentController::class,);
+
+Route::post('order/validation', 'OrderController@validateOrder');
+
+Route::post('/paymaya/test/checkout', 'AdminController@paymayaTest');
+
+Route::group(['prefix'=>'paypal'], function() {
+    Route::get('success', 'Front\PackageController@AuthMemberPackagePaypalsuccess')->name('AuthMemberPackagePaypalsuccess');
+	Route::get('fail', 'Front\PackageController@AuthMemberPackagePaypalcancel')->name('AuthMemberPackagePaypalcancel');
+});
+
+Route::group(['prefix'=>'paymaya'], function() {
+Route::get('/client/package/checkout/success', 'Front\PackageCheckoutController@packageCheckoutSuccess')->name('AuthMemberPackageCheckoutSuccess');
+Route::get('/client/package/checkout/failure', 'Front\PackageCheckoutController@packageCheckoutFailure')->name('AuthMemberPackageCheckoutFailure');
+Route::get('/client/package/checkout/cancel', 'Front\PackageCheckoutController@packageCheckoutCancel')->name('AuthMemberPackageCheckoutCancel');
+});
 
 Route::group(['prefix'=>'admin'], function() {
     Route::resources([

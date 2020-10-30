@@ -9,10 +9,10 @@ class Order extends Model
     protected $table = 'order';
 
     protected $fillable = [
-        'userid', 'total_price'
+        'userid', 'fname', 'lname', 'paymentid', 'delivery_fee', 'total_price', 'tray_remaining', 'trayid', 'status', 'payment_used'
     ];
 
     public function orderitem() {
-        return $this->hasMany('App\OrderItem', 'orderid');
+        return $this->hasMany('App\OrderItem', 'id', 'orderid');
     }
 }

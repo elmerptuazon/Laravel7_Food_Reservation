@@ -9,6 +9,6 @@ class CalendarCapacity extends Model
     protected $table = 'calendar_capacities';
 
     protected $fillable = [
-        'from_date', 'to_date', 'tray_capacity',
+        'from_date', 'to_date', 'tray_capacity', 'tray_remaining', 'active'
     ];
 }

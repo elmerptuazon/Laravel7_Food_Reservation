@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
   <link rel="stylesheet" href="{{asset ("/bower_components/daterange/daterangepicker.css")}}">
     @yield('custom_style')
-
 </head>
 <body class="skin-white layout-top-nav">
   <!-- ./wrapper -->

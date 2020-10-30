@@ -15,6 +15,9 @@ class VerifyCsrfToken extends Middleware
         '/admin/calendar_capacity',
         '/admin/calendar_capacity/*',
         '/admin/order',
-        '/admin/order/*'
+        '/admin/order/*',
+        '/paymaya/test/checkout',
+        'order/validation',
+        'payment',
     ];
 }

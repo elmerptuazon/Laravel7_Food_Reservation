@@ -29,8 +29,8 @@
                         <span class="input-group-text" id="inputGroup-sizing-sm">Paid</span>
                     </div>
                     <select class="form-control" id="paid" name="cars">
-                        <option value="{{ $order->paymentid }}">{{ $order->paymentid ? 'Yes' : 'No' }}</option>
-                        <option value="{{ !$order->paymentid }}">{{ !$order->paymentid ? 'Yes' : 'No' }}</option>
+                        <option value="{{ $order->status }}">{{ $order->status ? 'Yes' : 'No' }}</option>
+                        <option value="{{ !$order->status }}">{{ !$order->status ? 'Yes' : 'No' }}</option>
                     </select>
                 </div>
             </div>

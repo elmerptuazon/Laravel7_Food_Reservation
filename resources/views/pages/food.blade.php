@@ -41,10 +41,11 @@ h1 { text-align: center; font-size: 16px; }
     <img src="{{ asset("/images/". $food->image . "." . $food->image_type)}}" class="img-fluid" alt="{{ ucwords($food->name)}}" width="1000" height="auto">
     <div class="container">
         <div class="row">
+        <div id="meat_max_pcs{{$food->id}}" data-field-id="{{$food->current_max_pcs}}"></div>
         <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="btn btn-secondary btn-sm sumofmeat"> <i class="fa fa-minus"></i></button>
-        <input class="quantity" style="width:40px;" min="1" max="10" value="1" id="meat_{{$food->id}}" type="number">
+        <input class="quantity" style="width:40px;" min="1" max="{{$food->current_max_pcs}}" value="1" id="meat_{{$food->id}}" type="number" disabled>
         <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="btn btn-secondary btn-sm sumofmeat"><i class="fa fa-plus"></i></button>
-        <span class="badge badge-pill badge-warning" style="height: max-content; margin-top: 5px;"><span id="meatleft">{{10 -  1}}</span> left</span>  
+        <span class="badge badge-pill badge-warning" style="height: max-content; margin-top: 5px;"><span id="meatleft">{{$food->current_max_pcs -1}}</span> left</span>  
         </div>
     </div>
     <div class="relative">
@@ -57,19 +58,20 @@ h1 { text-align: center; font-size: 16px; }
             <img src="{{ asset("/images/". $val->image . "." . $val->image_type)}}" class="img-fluid" id="food_{{$val->id}}" alt="{{ ucwords($val->name)}}" width="100" height="100">
             <div class="container">
                 <div class="row">
+                <div id="sidedish_max_pcs{{$val->id}}" data-field-id="{{$val->max_pcs_per_tray}}" ></div>
                 <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="btn btn-secondary btn-sm sumofsidedish_{{$val->id}}"> <i class="fa fa-minus"></i></button>
-                <input class="quantity" style="width:40px;" min="0" value="0" id="sidedish_{{$val->id}}" type="number">
+                <input class="quantity" style="width:40px;" min="0" max="{{$val->max_pcs_per_tray}}" value="0" id="sidedish_{{$val->id}}" type="number" disabled>
                 <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="btn btn-secondary btn-sm sumofsidedish_{{$val->id}}"><i class="fa fa-plus"></i></button>
-                <span class="badge badge-pill badge-warning" style="height: max-content; margin-top: 5px;"><span id="sidedishleft_{{$val->id}}">{{10}}</span> left</span>  
+                <span class="badge badge-pill badge-warning" style="height: max-content; margin-top: 5px;"><span id="sidedishleft_{{$val->id}}">{{$val->max_pcs_per_tray}}</span> left</span>  
                 </div>
             </div>
         @endforeach
         </div>
         <div style="float: right; padding-bottom: 10px;">
-        <button type="button" style="background-color:black;" class="btn button-border">
+        <a href="/"><button type="button" style="background-color:#474545;" class="btn button-border">
             <span style="color: white;">CANCEL</span>
-        </button>
-        <button type="button" style="background-color:red;" id="submitOrder" class="btn button-border">
+        </button></a>
+        <button type="button" style="background-color:#790F0F;" id="submitOrder" class="btn button-border">
             <span style="color: white;">ORDER</span>
         </button>
         </div>
@@ -85,13 +87,15 @@ $( document ).ready(function() {
     const FOOD_LIST = {};
     FOOD_LIST['meat'] = {};
     FOOD_LIST['sidedish'] = {};
-
+    FOOD_LIST['calendar_capacity_id'] = {!! json_encode($calendar_capacity->id) !!}
+ 
     let food_objects = {};
     food_objects.meatId = {!! json_encode($food->id) !!};
     food_objects.meatOrder = 1;
     FOOD_LIST['meat'][food_objects.meatId] = food_objects.meatOrder
     $(".sumofmeat").bind("click", function(){
-        $('#meatleft').text(10 - $('#meat_{{$food->id}}').val());
+        $('#meatleft').text($('#meat_max_pcs{{$food->id}}').data("field-id") - $('#meat_{{$food->id}}').val());
+        console.log($('#meat_{{$food->id}}').val())
         food_objects.meatId = {!! json_encode($food->id) !!};
         food_objects.meatOrder = $('#meat_{{$food->id}}').val();
         FOOD_LIST['meat'][food_objects.meatId] = food_objects.meatOrder
@@ -102,7 +106,7 @@ $( document ).ready(function() {
     for(let i = 0; i <= sidedishArray.length-1; i++) {
         $(".sumofsidedish_"+sidedishArray[i].id).bind("click", function(){
             
-            $('#sidedishleft_'+sidedishArray[i].id).text(10 - $('#sidedish_'+sidedishArray[i].id).val());
+            $('#sidedishleft_'+sidedishArray[i].id).text($('#sidedish_max_pcs'+sidedishArray[i].id).data("field-id") - $('#sidedish_'+sidedishArray[i].id).val());
 
             if($('#sidedish_'+sidedishArray[i].id).val() != 0) {
                 food_objects['sidedishid_' + sidedishArray[i].id] = sidedishArray[i].id
@@ -117,7 +121,7 @@ $( document ).ready(function() {
     }
     
     $('#submitOrder').on('click', function() {
-        window.location.href = "http://localhost:8000/order/" + JSON.stringify(FOOD_LIST);
+        window.location.href = "{{url('order')}}"+ "/" + JSON.stringify(FOOD_LIST);
     })
 });
 </script>

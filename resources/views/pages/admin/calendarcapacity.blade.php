@@ -11,6 +11,13 @@
   top: 30vh;
 }
 
+.button-border {
+    outline: none;
+    border: 1px solid;
+    padding: 15px;
+    box-shadow: 2px 5px;
+}
+
 
 </style>
 @endsection
@@ -35,11 +42,11 @@
   <tbody>
   @foreach($calendarcaps as $calendarcap)
   <tr>
-    <th><a href="calendar_capacity/{{$calendarcap->id}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></th>
+    <th><a href="calendar_capacity/{{$calendarcap->id}}" style="color:#b50e35;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></th>
       <td><small>{{ \Carbon\Carbon::parse($calendarcap->from_date)->format('m-d-Y') }}</small></td>
       <td>{{$calendarcap->tray_capacity}}</td>
       <td><a href="order_items/{{$calendarcap->to_date}}">{{ $calendarcap->tray_remaining }}</a></td>
-      <td><a data-toggle="modal" data-target="#deleteModal{{$calendarcap->id}}"><i class="fa fa-trash-o" aria-hidden="true"></i></a></td>
+      <td><a data-toggle="modal" data-target="#deleteModal{{$calendarcap->id}}" style="color:#b50e35;"><i class="fa fa-trash-o" aria-hidden="true"></i></a></td>
     </tr>
     <div class="modal fade" id="deleteModal{{$calendarcap->id}}" role="dialog">
     <div class="modal-dialog">
@@ -64,14 +71,16 @@
 <div class="container">
     <div class="row">
         <div class="col-6 offset-3" style="display:grid;">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">CREATE</button>
+            <button type="button" style="background-color:#790F0F;" id="submitOrder" class="btn button-border" data-toggle="modal" data-target="#exampleModal">
+                <span style="color: white;">CREATE</span>
+            </button>
         </div>
 
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">ADD NEW</h5>
+                <div class="modal-header" style="background-color:#790F0F;">
+                  <h5 class="modal-title" id="exampleModalLabel" style="color:white">ADD NEW</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -99,8 +108,14 @@
                     </div>
                   </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-danger" data-dismiss="modal">CANCEL</button>
-                  <button type="button" id="addCapacity" class="btn btn-primary">ADD</button>
+                <a href="/"><button type="button" style="background-color:#474545;" class="btn button-border" data-dismiss="modal">
+                    <span style="color: white;">CANCEL</span>
+                </button></a>
+                <button type="button" style="background-color:#790F0F;" id="addCapacity" class="btn button-border">
+                    <span style="color: white;">ADD</span>
+                </button>
+                  <!-- <button type="button" class="btn btn-danger" data-dismiss="modal">CANCEL</button>
+                  <button type="button" id="addCapacity" class="btn btn-primary">ADD</button> -->
                 </div>
               </div>
             </div>
@@ -116,12 +131,12 @@ $( document ).ready(function() {
     $('.warningText').hide();
     $('.successText').hide();
     let capacity_date = $('#date_latest').data("field-id");
-
+  
     $(".datepicker").daterangepicker({
         singleDatePicker: true,
         opens: 'center',
         drops: "auto",
-        minDate: capacity_date ? moment(capacity_date).add(1, 'days').format("MMMM DD, YYYY") : moment().format("MMMM DD, YYYY"),
+        minDate: capacity_date ? moment(capacity_date).format("MMMM DD, YYYY") : moment().format("MMMM DD, YYYY"),
         applyButtonClasses: "btn-warning",
         autoApply: true,
         locale: {
@@ -129,12 +144,12 @@ $( document ).ready(function() {
             applyLabel: "Confirm",
         },
     }, function(start, end, label) {
-      $('#selectedDate').val(start.format('YYYY-MM-DD'))
-        // console.log("A new date selection was made: "+ label+ ' ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+      // $('#selectedDate').val(start.format('MMMM DD, YYYY')
+      capacity_date = moment(start, 'MMMM DD, YYYY');
   });
-  $('#selectedDate').val(moment(capacity_date).add(1, 'days').format("YYYY-MM-DD"));
 
   $('#addCapacity').on('click', function() {
+    $('#selectedDate').val(moment(capacity_date).format("YYYY-MM-DD"));
     if($('#traycapacity').val() < 1) {
       $('.warningText').show();
       return false;
@@ -154,6 +169,7 @@ $( document ).ready(function() {
       });
 
     }
+    $('#selectedDate').val(moment(capacity_date).format("MMMM DD, YYYY"));
   });
 
   $('.deleteItem').on('click', function() {

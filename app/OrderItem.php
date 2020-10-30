@@ -9,10 +9,10 @@ class OrderItem extends Model
     protected $table = 'order_item';
 
     protected $fillable = [
-        'foodid', 'orderid', 'quantity'
+        'foodid', 'foodname', 'orderid', 'quantity'
     ];
 
     public function order() {
-        return $this->belongsTo('App\Order', 'id');
+        return $this->belongsTo('App\Order', 'orderid', 'id');
     }
 }
