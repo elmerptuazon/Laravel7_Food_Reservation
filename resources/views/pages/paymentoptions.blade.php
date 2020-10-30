@@ -14,6 +14,14 @@
 @endsection
 
 @section('content')
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/food/{{$meat->id}}">{{ ucwords($meat->name)}}</a></li>
+        <li class="breadcrumb-item"><a href="{{ URL::previous() }}">Reserve & Pay</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="#">User Info</a></li>
+      </ol>
+    </nav>
 <div class="container">
     <div class="row">
     <div id="details" data-field-id="{{$details}}" ></div>

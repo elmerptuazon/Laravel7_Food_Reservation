@@ -70,6 +70,8 @@ class OrderController extends Controller
             return response()->json(['error'=>'No date available. Please contact admin.', 'error_id'=>1]);
         } else if($dateSelected->active == 0) {
             return response()->json(['error'=>'Date fully booked. Please pick another date.', 'error_id'=>1]);
+        }else if($dateSelected->tray_remaining == 0.00) {
+            return response()->json(['error'=>'Date fully booked. Please pick another date.', 'error_id'=>1]);
         }
 
         $dailyCapacity = $this->computeDailyCapacity($request->input('meat_list')['order'], $request->input('meat_list')['max_pcs_per_tray']);

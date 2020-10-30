@@ -1,6 +1,12 @@
 @extends('admin')
 
 @section('content')
+    <nav aria-label="breadcrumb">   
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/admin/order">Order</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="#">Order Update</a></li>
+      </ol>
+    </nav>
 <div class="alert alert-success successText" style="display:none">
     Success
 </div>
@@ -85,13 +91,14 @@ let timeNow = moment().format("HH:mm:ss");
         },
     }, function(start, end, label) {
         $('#selectedDate').val(start.format("YYYY-MM-DD") + ' ' + timeNow)
-        
+        capacity_date = moment(start).format("YYYY-MM-DD " + timeNow);
         // console.log("A new date selection was made: "+ label+ ' ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
   });
-  $('#selectedDate').val(moment(capacity_date).format("YYYY-MM-DD HH:mm:ss"));
 
 
   $('#updateOrder').on('click', function() {
+    $('#selectedDate').val(moment(capacity_date).format("YYYY-MM-DD " + timeNow));
+    capacity_date = moment(capacity_date).format("YYYY-MM-DD " + timeNow);
         $.ajax( {
             type: "PUT",
             url: "{{ url('admin/order/'.$order->id)}}",

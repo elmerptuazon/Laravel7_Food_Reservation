@@ -23,12 +23,17 @@
 @endsection
 
 @section('content')
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page"><a href="/admin/calendar_capacity">Capacity/Inventory</a></li>
+      </ol>
+    </nav>
 <div class="alert alert-success successText" style="display:none">
     Success
 </div>
 <div class="container container-remove-padding">
 <div style="overflow: auto;">
-<div id="date_latest" data-field-id="{{$calendarlatest->from_date}}" ></div>
+<div id="date_latest" data-field-id="{{ \Carbon\Carbon::parse($calendarlatest->from_date)->format('Y-m-d') }}" ></div>
 <table class="table">
   <thead class="thead">
     <tr>
@@ -131,12 +136,12 @@ $( document ).ready(function() {
     $('.warningText').hide();
     $('.successText').hide();
     let capacity_date = $('#date_latest').data("field-id");
-  
+
     $(".datepicker").daterangepicker({
         singleDatePicker: true,
         opens: 'center',
         drops: "auto",
-        minDate: capacity_date ? moment(capacity_date).format("MMMM DD, YYYY") : moment().format("MMMM DD, YYYY"),
+        minDate: moment().format("MMMM DD, YYYY"),
         applyButtonClasses: "btn-warning",
         autoApply: true,
         locale: {
@@ -164,7 +169,7 @@ $( document ).ready(function() {
           $('.successText').show();
           setTimeout(function(){ $('.successText').fadeOut() }, 2000);
         }else {
-          alert('Error')
+          alert(data.error)
         }
       });
 

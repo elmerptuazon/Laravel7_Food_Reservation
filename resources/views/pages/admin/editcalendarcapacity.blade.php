@@ -1,6 +1,12 @@
 @extends('admin')
 
 @section('content')
+    <nav aria-label="breadcrumb">   
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/admin/calendar_capacity">Capacity/Inventory</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="#">Capacity/Inventory Update</a></li>
+      </ol>
+    </nav>
 <div class="alert alert-success successText" style="display:none">
     Success
 </div>
@@ -48,7 +54,7 @@ $( document ).ready(function() {
         singleDatePicker: true,
         opens: 'center',
         drops: "down",
-        minDate: capacity_date ? moment(capacity_date).add(1, 'days').format("MMMM DD, YYYY") : moment().format("MMMM DD, YYYY"),
+        minDate: capacity_date ? moment(capacity_date).format("MMMM DD, YYYY") : moment().format("MMMM DD, YYYY"),
         applyButtonClasses: "btn-warning",
         autoApply: true,
         locale: {
@@ -60,9 +66,11 @@ $( document ).ready(function() {
         // console.log("A new date selection was made: "+ label+ ' ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
   });
 
-  $('#selectedDate').val(moment(capacity_date).format("YYYY-MM-DD"));
+  
 
   $('#updateCapacity').on('click', function() {
+    $('#selectedDate').val(moment(capacity_date).format("YYYY-MM-DD"));
+    capacity_date = moment(capacity_date).format("YYYY-MM-DD");
     if($('#traycapacity').val() && $('#selectedDate').val()) {
         $.ajax( {
             type: "PUT",
@@ -73,6 +81,8 @@ $( document ).ready(function() {
                     location.reload();
                     $('.successText').show();
                     setTimeout(function(){ $('.successText').fadeOut() }, 2000);
+                }else if(data.error) {
+                    alert(data.error)
                 }
             }
         });

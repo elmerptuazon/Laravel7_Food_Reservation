@@ -16,7 +16,8 @@ class PaymentController extends Controller
      */
     public function index(Request $request)
     {
-        return view('pages.paymentoptions', ['details'=>$request->get('details')]);
+        $meat = json_decode($request->get('details'));
+        return view('pages.paymentoptions', ['details'=>$request->get('details'), 'meat'=>$meat->meat_list]);
     }
 
     /**

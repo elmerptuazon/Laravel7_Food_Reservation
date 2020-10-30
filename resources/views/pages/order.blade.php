@@ -18,6 +18,13 @@
 @endsection
 
 @section('content')
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ url()->previous() }}">{{ ucwords($meat_list->name)}}</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="#">Reserve & Pay</a></li>
+      </ol>
+    </nav>
 <div class="container">
     <div id="meat_list" data-field-id="{{$meat_list}}" ></div>
     <div class="row" style="padding-top: 10px;">
@@ -98,18 +105,14 @@
                 <u>{{ \Carbon\Carbon::parse($calendar_capacity->to_date)->addDays(1)->format('F d, Y') }}</u>
             </div>
         
-            <div class="col-12 text-center">
-                To continue to order, tap on Reserve & Pay below
-                or Select a <strong><span style="color:blue" class="datepicker checkdatepicker"><u>Different Date</u></span></strong>
-                <input placeholder="Selected date" type="text" style="text-align:center;" class="form-control checkdatepicker datepicker">
-            </div>
         </div>
     </div>
     @endif
 @endisset
-        <div class="anotherDate" style="display:none">
+        <div class="anotherDate">
             <div class="col-12 text-center">
-                Please choose another <strong><span style="color:blue" class="datepicker"><u>Date</u></span></strong>
+                To continue to order, tap on Reserve & Pay below
+                or Select a <strong><span style="color:blue"><u>Different Date</u></span></strong>
                 <input placeholder="Selected date" type="text" style="text-align:center;" class="form-control datepicker">
             </div>
         </div>
@@ -129,32 +132,31 @@
 <script>
 $( document ).ready(function() {
 
-    let capacity_date = $('#capacity_date').data("field-id");
+    let capacity_date = moment().format("YYYY-MM-DD");
     let meat_list = $('#meat_list').data("field-id");
     let sidedish_list = $('#sidedish_list').data("field-id");
     
-    if($('.checkdatepicker').length != 0) {
-        capacity_date = moment(capacity_date).add(1, 'days').format("YYYY-MM-DD")
-    }
+   
     $(".datepicker").daterangepicker({
         singleDatePicker: true,
         opens: 'center',
-        drops: "auto",
-        minDate: $('.datepicker').length != 0 ? moment(capacity_date).format("MMMM DD, YYYY") : moment().format("MMMM DD, YYYY"),
+        drops: "down",
+        minDate: moment().format("MMMM DD, YYYY"),
         applyButtonClasses: "btn-warning",
-        autoApply: true,
+        // autoApply: true,
         locale: {
             format: "MMMM DD, YYYY",
             applyLabel: "Confirm",
         },
     }, function(start, end, label) {
         capacity_date = start.format('YYYY-MM-DD');
+        
         // console.log("A new date selection was made: "+ label+ ' ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
   });
     
 
 $('#submitOrder').on('click', function() {
-
+    
     $.post( "{{ url('order/validation') }}", { 
         meat_list: meat_list, 
         sidedish_list: sidedish_list,
@@ -169,7 +171,6 @@ $('#submitOrder').on('click', function() {
                 return false;
             }else {
                 alert(data.error)
-                $(".anotherDate").show();
                 return false;
             }
         }

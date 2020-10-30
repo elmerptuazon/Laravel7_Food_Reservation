@@ -14,6 +14,11 @@
 @endsection
 
 @section('content')
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page"><a href="/admin/order">Order</a></li>
+      </ol>
+    </nav>
 <div class="alert alert-success successText" style="display:none">
     Success
 </div>
