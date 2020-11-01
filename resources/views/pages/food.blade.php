@@ -93,7 +93,6 @@ $( document ).ready(function() {
     const FOOD_LIST = {};
     FOOD_LIST['meat'] = {};
     FOOD_LIST['sidedish'] = {};
-    FOOD_LIST['calendar_capacity_id'] = {!! json_encode($calendar_capacity->id) !!}
  
     let food_objects = {};
     food_objects.meatId = {!! json_encode($food->id) !!};

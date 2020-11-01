@@ -91,9 +91,7 @@
     </div>
 @endforeach
 
-@isset($calendar_capacity)
-<div id="capacity_date" data-field-id="{{$calendar_capacity->to_date}}" ></div>
-    @if(!$calendar_capacity->active)
+@if(!$calendar_capacity)
     <div class="container">
         <div class="row">
             <div class="col-12 text-center pt-2 pb-2">
@@ -102,13 +100,12 @@
             <div class="col-12 text-center pb-2">
                 Due to the high-demand of Sunday Smoker BBQs,
                 the next date we can deliver will be on 
-                <u>{{ \Carbon\Carbon::parse($calendar_capacity->to_date)->addDays(1)->format('F d, Y') }}</u>
+                <u>{{ \Carbon\Carbon::now()->addDays(1)->format('F d, Y') }}</u>
             </div>
         
         </div>
     </div>
-    @endif
-@endisset
+@endif
         <div class="anotherDate">
             <div class="col-12 text-center">
                 To continue to order, tap on Reserve & Pay below

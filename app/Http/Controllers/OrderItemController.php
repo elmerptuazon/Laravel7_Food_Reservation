@@ -50,7 +50,7 @@ class OrderItemController extends Controller
     {
         
         $dateSelect = Carbon::parse($date)->format('Y-m-d');
-        $orderitems = OrderItem::whereDate('created_at', $dateSelect)->with(['order'])->paginate(3);
+        $orderitems = OrderItem::whereDate('created_at', $dateSelect)->with(['order'])->paginate(10);
         // return response()->json($orderitems);
         return view('pages.admin.orderitems', ['orderitems' => $orderitems]);
     }

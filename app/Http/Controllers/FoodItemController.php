@@ -54,15 +54,14 @@ class FoodItemController extends Controller
         $calendar_capacity = CalendarCapacity::where('to_date', '>=', $date_now)->where('active', 1)->where('tray_remaining', '>', 0)->first();
         
         if($calendar_capacity == null) {
-            return response()->view('errors.NoDateAvailable', ['date_msg'=>'No available dates for order. Please contact administrator.'], 500);
+            $calendar_capacity = (object)array();
+            $calendar_capacity->tray_remaining = 10;
+            // return response()->view('errors.NoDateAvailable', ['date_msg'=>'No available dates for order. Please contact administrator.'], 500);
         }
         
         $food['current_max_pcs'] = $this->computeRemainingMeatPcs($food->max_pcs_per_tray,$calendar_capacity->tray_remaining);
 
-        // if($food['current_max_pcs'] == 0) {
-        //     return response()->view('errors.NoDateAvailable', ['date_msg'=>'This type of meat is unavailable at the moment. Please contact administrator.'], 500);
-        // }
-        $items = array('food'=>$food, 'sidedish' => $sidedish, 'calendar_capacity' => $calendar_capacity);
+        $items = array('food'=>$food, 'sidedish' => $sidedish);
         return view('pages.food')->with($items);
     }
 

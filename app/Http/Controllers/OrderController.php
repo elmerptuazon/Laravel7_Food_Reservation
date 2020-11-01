@@ -19,7 +19,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::orderBy('id', 'desc')->paginate(3);
+        $orders = Order::orderBy('id', 'desc')->paginate(10);
         
         return view('pages.admin.order', ['orders' => $orders]);
     }
@@ -104,7 +104,8 @@ class OrderController extends Controller
         $date_now = Carbon::now()->format('Y-m-d');
         $convertFoodList = json_decode($foodlist);
         $sidedishlist = [];
-        
+        $dateToday = Carbon::now()->format('Y-m-d');
+
         foreach($convertFoodList->meat as $id=>$val) {
             $meatlist = FoodItem::where('type', 'meat')->where('id', $id)->first();
             $meatlist->order = $val;
@@ -116,7 +117,7 @@ class OrderController extends Controller
             array_push($sidedishlist, $sd);
         }
 
-        $calendar_capacity = CalendarCapacity::where('id', $convertFoodList->calendar_capacity_id)->first();
+        $calendar_capacity = CalendarCapacity::where('from_date', $dateToday)->first();
 
         $detailsArr = array(
             'meat_list' => $meatlist,

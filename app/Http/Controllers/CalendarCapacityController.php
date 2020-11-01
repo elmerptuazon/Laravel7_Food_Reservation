@@ -15,7 +15,7 @@ class CalendarCapacityController extends Controller
      */
     public function index()
     {   
-        $calendarcap = CalendarCapacity::orderBy('from_date', 'desc')->paginate(3);
+        $calendarcap = CalendarCapacity::orderBy('from_date', 'desc')->paginate(10);
         $dateLatest = CalendarCapacity::orderBy('from_date', 'desc')->first();
   
         return view('pages.admin.calendarcapacity', ['calendarcaps' => $calendarcap, 'calendarlatest' => $dateLatest]);
