@@ -21,7 +21,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ url()->previous() }}">{{ ucwords($meat_list->name)}}</a></li>
+        <li class="breadcrumb-item"><a href="/food/{{$meat_list->id}}">{{ ucwords($meat_list->name)}}</a></li>
         <li class="breadcrumb-item active" aria-current="page"><a href="#">Reserve & Pay</a></li>
       </ol>
     </nav>
@@ -52,7 +52,7 @@
         <div class="col-3 pl-0">
             <div class="row">
                 <div class="col-12">
-                <small><strong><span>&#x20B1;</span> {{ number_format($meat_list->unit_price,2)}}</strong></small>
+                <small><strong><span>&#x20B1;</span> {{ number_format(($meat_list->unit_price * $meat_list->order),2)}}</strong></small>
                 </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
         <div class="col-3 pl-0">
             <div class="row">
                 <div class="col-12">
-                <small><strong><span>&#x20B1;</span> {{ number_format($val->unit_price,2)}}</strong></small>
+                <small><strong><span>&#x20B1;</span> {{ number_format(($val->unit_price * $val->order),2)}}</strong></small>
                 </div>
             </div>
         </div>

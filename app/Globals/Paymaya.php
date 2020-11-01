@@ -16,6 +16,7 @@ use App\Client;
 
 use App\Order;
 use App\OrderItem;
+use App\User;
 
 use Illuminate\Support\Facades\Crypt;
 
@@ -48,6 +49,7 @@ class Paymaya
 
     public function paymayaCheckout($payment_details)
     {
+
         PayMayaSDK::getInstance()->initCheckout(
             env('PAYMAYA_PUBLIC_KEY'),
             env('PAYMAYA_SECRET_KEY'),
@@ -105,8 +107,22 @@ class Paymaya
         $user->contact->phone = '09378462712';
         $user->contact->email = 'sdfsdf@sdfsdf.com';
 
+        $userinfo = User::create([
+            'fname' => $payment_details->user_info['fname'],
+            'lname' => $payment_details->user_info['lname'],
+            'mobile' => $payment_details->user_info['mobile'],
+            'email' => $payment_details->user_info['email'],
+            'address1' => $payment_details->user_info['address'],
+            'address2' => $payment_details->user_info['address'],
+            'city' => $payment_details->user_info['city'],
+            'province' => $payment_details->user_info['province'],
+        ]);
+
         $order = Order::create([
             "paymentid" => $itemCheckout->id,
+            'userid' => $userinfo->id,
+            'fname' => $userinfo->fname,
+            'lname' => $userinfo->lname,
             "status" => 0,
             "total_price" => $payment_details->total_amount,
             "tray_remaining" => (float)$payment_details->tray_remaining,
@@ -139,6 +155,7 @@ class Paymaya
         if ($itemCheckout->execute() === false) {
             $error = $itemCheckout::getError(); 
             OrderItem::where('orderid', $order->id)->delete();
+            User::where('id', $order->userid)->delete();
             $order->delete();
             $return['status'] = 0; $return['message'] = "There is a problem with the paymaya payment gateway, please contact the administrator"; $return['error'] = $error; $return['link'] = ''; return response()->json($return);
         }
@@ -146,6 +163,7 @@ class Paymaya
         if ($itemCheckout->retrieve() === false) {
             $error = $itemCheckout::getError();
             OrderItem::where('orderid', $order->id)->delete();
+            User::where('id', $order->userid)->delete();
             $order->delete();
             $return['status'] = 0; $return['message'] = "There is a problem with the paymaya payment gateway, please contact the administrator"; $return['error'] = $error; $return['link'] = ''; return response()->json($return);
         }

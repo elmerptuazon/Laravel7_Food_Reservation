@@ -38,7 +38,6 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        
         $checkPaymentUsed = $request->payment_used;
         $meat_list = $request->meat_list;
         $sidedish_list = $request->sidedish_list;

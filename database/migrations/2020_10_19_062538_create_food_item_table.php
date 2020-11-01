@@ -21,6 +21,7 @@ class CreateFoodItemTable extends Migration
             $table->string('weight')->nullable();
             $table->string('procedure')->nullable();
             $table->integer('max_pcs_per_tray');
+            $table->integer('active')->nullable();
             $table->float('unit_price', 8, 2);
             $table->string('image')->default('');
             $table->string('image_type')->default('');

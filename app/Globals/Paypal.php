@@ -16,6 +16,7 @@ use PayPal\Api\PaymentExecution;
 use Illuminate\Http\Request;
 use App\Order;
 use App\OrderItem;
+use App\User;
 
 class Paypal
 {
@@ -110,9 +111,23 @@ class Paypal
                 break;
             }    
         }
+
+        $userinfo = User::create([
+            'fname' => $payment_details->user_info['fname'],
+            'lname' => $payment_details->user_info['lname'],
+            'mobile' => $payment_details->user_info['mobile'],
+            'email' => $payment_details->user_info['email'],
+            'address1' => $payment_details->user_info['address'],
+            'address2' => $payment_details->user_info['address'],
+            'city' => $payment_details->user_info['city'],
+            'province' => $payment_details->user_info['province'],
+        ]);
         
         $order = Order::create([
             "paymentid" => $payment->getId(),
+            'userid' => $userinfo->id,
+            'fname' => $userinfo->fname,
+            'lname' => $userinfo->lname,
             "status" => 0,
             "total_price" => $payment_details->total_amount,
             "tray_remaining" => (float)$payment_details->tray_remaining,
