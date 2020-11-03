@@ -16,9 +16,6 @@ class CheckIfAdmin
      */
     public function handle($request, Closure $next)
     {
-        if (!Auth::check()) {
-            return redirect('/');
-        }
         $role = Auth::user()->role; 
         switch ($role) {
           case 'customer':
