@@ -12,12 +12,12 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        '/admin/calendar_capacity',
-        '/admin/calendar_capacity/*',
-        '/admin/order',
-        '/admin/order/*',
-        '/paymaya/test/checkout',
-        'order/validation',
-        'payment',
+        // '/admin/calendar_capacity',
+        // '/admin/calendar_capacity/*',
+        // '/admin/order',
+        // '/admin/order/*',
+        // '/paymaya/test/checkout',
+        // 'order/validation',
+        // 'payment',
     ];
 }

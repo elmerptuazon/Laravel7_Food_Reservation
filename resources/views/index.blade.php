@@ -14,10 +14,8 @@
   <link rel="stylesheet" href="{{asset ("/bower_components/daterange/daterangepicker.css")}}">
     @yield('custom_style')
 </head>
-<body class="skin-white layout-top-nav">
+<body>
   <!-- ./wrapper -->
-
-
 @include('components/header')
 
 @yield('content')

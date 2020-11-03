@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('mobile')->nullable();
             $table->string('email')->nullable();
             $table->string('password')->nullable();
+            $table->enum('role', ['admin', 'customer'])->default('customer');
             $table->longText('address1')->nullable();
             $table->longText('address2')->nullable();
             $table->string('city')->nullable();

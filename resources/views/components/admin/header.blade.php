@@ -21,6 +21,29 @@
           <ul class="nav navbar-nav">
             <li><strong><a href="{{ url('admin/order') }}" style="color:#b50e35;">Orders</a></strong></li>
             <li><strong><a href="{{ url('admin/calendar_capacity') }}" style="color:#b50e35;">Capacity/Inventory</a></strong></li>
+            @guest
+                <li class="nav-item">
+                <strong><a class="nav-link" style="color:#b50e35;" href="{{ route('login') }}">{{ __('Login') }}</a></strong>
+                </li>
+                @if (Route::has('register'))
+                    <li class="nav-item">
+                    <strong><a class="nav-link" style="color:#b50e35;" href="{{ route('register') }}">{{ __('Register') }}</a></strong>
+                    </li>
+                @endif
+            @else
+                <li class="nav-item dropdown">
+
+                  <strong><a class="nav-link" style="color:#b50e35;" href="{{ route('logout') }}"
+                      onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();">
+                      {{ __('Logout') }}
+                  </a></strong>
+
+                  <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                      @csrf
+                  </form>
+                </li>
+            @endguest
           </ul>
         </div>
       </div>
