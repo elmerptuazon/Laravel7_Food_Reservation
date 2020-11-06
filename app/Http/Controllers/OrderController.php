@@ -9,6 +9,7 @@ use App\CalendarCapacity;
 use App\Order;
 use App\OrderItem;
 use Illuminate\Support\Facades\Validator;
+use Auth;
 
 class OrderController extends Controller
 {
@@ -64,8 +65,10 @@ class OrderController extends Controller
     }
 
     public function validateOrder(Request $request) {
+        
         $dateSelected = CalendarCapacity::where('from_date', $request->input('date'))->first();
-
+        $convertFoodList = (object)json_decode($request->cart_data);
+        
         if(!$dateSelected) {
             return response()->json(['error'=>'No date available. Please contact admin.', 'error_id'=>1]);
         } else if($dateSelected->active == 0) {
@@ -74,20 +77,30 @@ class OrderController extends Controller
             return response()->json(['error'=>'Date fully booked. Please pick another date.', 'error_id'=>1]);
         }
 
-        $dailyCapacity = $this->computeDailyCapacity($request->input('meat_list')['order'], $request->input('meat_list')['max_pcs_per_tray']);
-        $capacityRemaining = $this->computeRemainingTray($dateSelected->tray_remaining, [$dailyCapacity]);
-        $hasRemainingCapacity = $this->hasRemainingCapacity($capacityRemaining);
-
-        $order_array = array(
-            'meat_list' =>$request->input('meat_list'),
-            'sidedish_list'=>$request->input('sidedish_list'),
-            'date'=>$request->input('date'),
-            'tray_remaining'=>$capacityRemaining,
-            'tray_id' => $dateSelected->id
-        );
-        
+        $getFoodData = $this->getMeatAndSidedish($convertFoodList);
+        $collectDailyCapacity = array();
+       
+        foreach($getFoodData->meat_list as $meatkey => $meatvalue) {
+            $dailyCapacity = $this->computeDailyCapacity($meatvalue->order, $meatvalue->max_pcs_per_tray);
+            array_push($collectDailyCapacity, $dailyCapacity);
+        }
+        $capacityRemaining = $this->computeRemainingTray($dateSelected->tray_remaining, array_sum($collectDailyCapacity));
+        $hasRemainingCapacity = $this->hasRemainingCapacity($capacityRemaining->exact_amount);
+      
         if($hasRemainingCapacity) {
-            return response()->json(['status'=>'success','details'=>$order_array]);
+            $order_array = array(
+                'meat_list' =>$getFoodData->meat_list,
+                'sidedish_list'=>$getFoodData->sidedish_list,
+                'date'=>$request->input('date'),
+                'tray_remaining'=>$capacityRemaining->exact_amount,
+                'tray_id' => $dateSelected->id,
+                'food_list' => $getFoodData->food_list,
+                'total_amount' => $getFoodData->total_amount,
+                'user_info'=>Auth::user()
+            );    
+
+            return response()->json(['status'=>'Success']);
+
         }else {
             return response()->json(['error'=>'Not enough tray remaining. Please choose another date or reduce your items.', 'error_id'=>2]);
         }
@@ -99,33 +112,33 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($foodlist)
+    public function show(Request $request, $foodlist)
     {
-        $date_now = Carbon::now()->format('Y-m-d');
-        $convertFoodList = json_decode($foodlist);
-        $sidedishlist = [];
-        $dateToday = Carbon::now()->format('Y-m-d');
+        // $date_now = Carbon::now()->format('Y-m-d');
+        // $convertFoodList = json_decode($foodlist);
+        // $sidedishlist = [];
+        // $dateToday = Carbon::now()->format('Y-m-d');
 
-        foreach($convertFoodList->meat as $id=>$val) {
-            $meatlist = FoodItem::where('type', 'meat')->where('id', $id)->first();
-            $meatlist->order = $val;
-        }
+        // foreach($convertFoodList->meat as $id=>$val) {
+        //     $meatlist = FoodItem::where('type', 'meat')->where('id', $id)->first();
+        //     $meatlist->order = $val;
+        // }
 
-        foreach($convertFoodList->sidedish as $id=>$val) {
-            $sd = FoodItem::where('type', 'sidedish')->where('id', $id)->first();
-            $sd->order = $val;
-            array_push($sidedishlist, $sd);
-        }
+        // foreach($convertFoodList->sidedish as $id=>$val) {
+        //     $sd = FoodItem::where('type', 'sidedish')->where('id', $id)->first();
+        //     $sd->order = $val;
+        //     array_push($sidedishlist, $sd);
+        // }
 
-        $calendar_capacity = CalendarCapacity::where('from_date', $dateToday)->first();
+        // $calendar_capacity = CalendarCapacity::where('from_date', $dateToday)->first();
 
-        $detailsArr = array(
-            'meat_list' => $meatlist,
-            'sidedish_list' => $sidedishlist,
-            'calendar_capacity' => $calendar_capacity,
-        );
+        // $detailsArr = array(
+        //     'meat_list' => $meatlist,
+        //     'sidedish_list' => $sidedishlist,
+        //     'calendar_capacity' => $calendar_capacity,
+        // );
         
-        return view('pages.order')->with($detailsArr);
+        return view('pages.order');
     }
 
     public function showOrder($id) {

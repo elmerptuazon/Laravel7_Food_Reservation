@@ -16,11 +16,12 @@ use App\Client;
 
 use App\Order;
 use App\OrderItem;
-use App\User;
+use App\CalendarCapacity;
+use App\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\Crypt;
 
-class Paymaya
+class Paymaya extends Controller
 {
     public function checkout($txn_)
     {
@@ -101,42 +102,51 @@ class Paymaya
         $itemCheckout = new Checkout();
 
         $user = new PayMayaUser();
-        $user->firstName = 'fname';
-        $user->middleName = 'middlename';
-        $user->lastName = 'lname';
-        $user->contact->phone = '09378462712';
-        $user->contact->email = 'sdfsdf@sdfsdf.com';
+        $user->firstName = $payment_details['user_info']->fname;
+        $user->middleName = '';
+        $user->lastName = $payment_details['user_info']->lname;
+        $user->contact->phone = $payment_details['user_info']->mobile;
+        $user->contact->email = $payment_details['user_info']->email;
 
-        $userinfo = User::create([
-            'fname' => $payment_details->user_info['fname'],
-            'lname' => $payment_details->user_info['lname'],
-            'mobile' => $payment_details->user_info['mobile'],
-            'email' => $payment_details->user_info['email'],
-            'address1' => $payment_details->user_info['address'],
-            'address2' => $payment_details->user_info['address'],
-            'city' => $payment_details->user_info['city'],
-            'province' => $payment_details->user_info['province'],
-        ]);
-
+        $dateSelected = CalendarCapacity::where('from_date', $payment_details['date'])->first();
+        $collectDailyCapacity = array();
+        foreach($payment_details['item_info']->meat_list as $meatkey => $meatvalue) {
+            $dailyCapacity = $this->computeDailyCapacity($meatvalue->order, $meatvalue->max_pcs_per_tray);
+            array_push($collectDailyCapacity, $dailyCapacity);
+        }
+        $capacityRemaining = $this->computeRemainingTray($dateSelected->tray_remaining, array_sum($collectDailyCapacity));
+        
         $order = Order::create([
             "paymentid" => $itemCheckout->id,
-            'userid' => $userinfo->id,
-            'fname' => $userinfo->fname,
-            'lname' => $userinfo->lname,
+            'userid' => $payment_details['user_info']->id,
+            'fname' => $payment_details['user_info']->fname,
+            'lname' => $payment_details['user_info']->lname,
             "status" => 0,
             "total_price" => $payment_details->total_amount,
-            "tray_remaining" => (float)$payment_details->tray_remaining,
+            "tray_remaining" => (float)$capacityRemaining->exact_amount,
             "payment_used" => "paymaya",
-            "trayid" => (int)$payment_details->tray_id
+            "trayid" => (int)$dateSelected->id
         ]);
-        for($i = 0; $i <= (sizeof($payment_details->item_list)-1); $i++) {
+ 
+        foreach($payment_details['item_info']->sidedish_list as $meatid => $sidedishes) {
             OrderItem::create([
-                'foodid'=>$payment_details->item_list[$i]->id,
-                'foodname'=>$payment_details->item_list[$i]->name,
+                'foodid'=>$payment_details['item_info']->meat_list[$meatid]->id,
+                'foodname'=>$payment_details['item_info']->meat_list[$meatid]->name,
                 'orderid'=> $order->id,
-                'quantity'=>$payment_details->item_list[$i]->qty
+                'quantity'=>$payment_details['item_info']->meat_list[$meatid]->order
             ]);
+            foreach($sidedishes as $sidedishid => $sidedish) {
+                if($sidedish != (object)array()) {
+                    OrderItem::create([
+                        'foodid'=>$payment_details['item_info']->sidedish_list[$meatid][$sidedishid]->id,
+                        'foodname'=>$payment_details['item_info']->sidedish_list[$meatid][$sidedishid]->name,
+                        'orderid'=> $order->id,
+                        'quantity'=>$payment_details['item_info']->sidedish_list[$meatid][$sidedishid]->order
+                    ]);
+                }
+            }
         }
+
 
         
         $itemCheckout->buyer = $user->buyerInfo();
@@ -155,7 +165,6 @@ class Paymaya
         if ($itemCheckout->execute() === false) {
             $error = $itemCheckout::getError(); 
             OrderItem::where('orderid', $order->id)->delete();
-            User::where('id', $order->userid)->delete();
             $order->delete();
             $return['status'] = 0; $return['message'] = "There is a problem with the paymaya payment gateway, please contact the administrator"; $return['error'] = $error; $return['link'] = ''; return response()->json($return);
         }
@@ -163,7 +172,6 @@ class Paymaya
         if ($itemCheckout->retrieve() === false) {
             $error = $itemCheckout::getError();
             OrderItem::where('orderid', $order->id)->delete();
-            User::where('id', $order->userid)->delete();
             $order->delete();
             $return['status'] = 0; $return['message'] = "There is a problem with the paymaya payment gateway, please contact the administrator"; $return['error'] = $error; $return['link'] = ''; return response()->json($return);
         }
@@ -171,7 +179,6 @@ class Paymaya
         $order->paymentid = $itemCheckout->id;
         $order->save();
         
-        // $Txn->txn_paymaya_checkout_id = $itemCheckout->id; $Txn->save();
 
         $return['status'] = 1; $return['message'] = 'Redirecting to paymaya'; $return['link'] = $itemCheckout->url; return response()->json($return);
 

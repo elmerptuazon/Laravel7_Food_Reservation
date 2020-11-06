@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Globals\Paypal;
-use App\Globals\Paymaya;
-use stdClass;
-use Auth;
+use App\FoodItem;
+use Carbon\Carbon;
+use App\CalendarCapacity;
 
-class PaymentController extends Controller
+class CartController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +16,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $user_info = Auth::user();
-        return view('pages.paymentoptions', ['user_info'=>$user_info]);
+        return view('pages.cart');
     }
 
     /**
@@ -40,24 +38,21 @@ class PaymentController extends Controller
     public function store(Request $request)
     {
         $convertFoodList = (object)json_decode($request->cart_data);
-        $convertDate = json_decode($request->date);
-        $getFoodData = $this->getMeatAndSidedish($convertFoodList);
-
-        $checkPaymentUsed = $request->payment_used;
-        
-        $request['total_amount'] = $getFoodData->total_amount;
-        $request['item_info'] = $getFoodData;
-        $request['date'] = $convertDate;
-        $request['user_info'] = Auth::user();
-
-        if($checkPaymentUsed == 'paypal') {
-            $paypal = new Paypal;
-            return $paypal->paypalcheckout($request);
-        }else if($checkPaymentUsed == 'paymaya') {
-            $paymaya = new Paymaya;
-            return $paymaya->paymayaCheckout($request);
+       
+        if($convertFoodList == null) {
+            return view('pages.cart');
+        } else if ($request->cart_data == null) {
+            return view('pages.cart');
+        }else if($request->cart_data == "undefined") {
+            return view('pages.cart');
         }
         
+        $getFoodData = $this->getMeatAndSidedish($convertFoodList);
+        
+        $dateToday = Carbon::now()->format('Y-m-d');
+        $calendar_capacity = CalendarCapacity::where('from_date', $dateToday)->where('active', 1)->first();
+
+        return view('pages.cart', ['meat_list' => $getFoodData->meat_list, 'sidedish_list' => $getFoodData->sidedish_list, 'total_order'=>$getFoodData->total_amount, 'calendar_capacity'=>$calendar_capacity]);
     }
 
     /**

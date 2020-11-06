@@ -12,22 +12,24 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/check', 'HomeController@index');
-
 Route::get('/', 'MainController@index')->name('customer_home');
+// Route::get('/check', function() {
+//     return view('paypal.success');
+// });
+Route::group(['prefix'=>'/', 'middleware'=>['checkiflogin']], function() {
+    Route::resource('food', FoodItemController::class,)->only([
+        'show',
+    ]);
+    Route::resource('order', OrderController::class,)->only([
+        'show', 'store',
+    ]);
+    Route::resource('cart', CartController::class,)->only([
+        'index', 'store'
+    ]);
+    Route::resource('payment', PaymentController::class,);
 
-Route::resource('food', FoodItemController::class,)->only([
-    'show',
-]);
-Route::resource('order', OrderController::class,)->only([
-    'show', 'store',
-]);
-Route::resource('payment', PaymentController::class,);
-
-Route::post('order/validation', 'OrderController@validateOrder');
-
-Route::post('/paymaya/test/checkout', 'AdminController@paymayaTest');
+    Route::post('order/validation', 'OrderController@validateOrder');
+});
 
 Route::group(['prefix'=>'paypal', 'middleware'=>['checkiflogin']], function() {
     Route::get('success', 'Front\PackageController@AuthMemberPackagePaypalsuccess')->name('AuthMemberPackagePaypalsuccess');

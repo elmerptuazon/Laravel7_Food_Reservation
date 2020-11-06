@@ -17,8 +17,10 @@ use Illuminate\Http\Request;
 use App\Order;
 use App\OrderItem;
 use App\User;
+use App\CalendarCapacity;
+use App\Http\Controllers\Controller;
 
-class Paypal
+class Paypal extends Controller
 {
 
     protected $data = [];
@@ -65,21 +67,22 @@ class Paypal
     {   
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');
+        // foreach($payment_details->meat_list as $key=>$val) {
+        //     $item_1[$key] = new Item();
+        //     $item_1[$key]->setName(ucwords($val['name']))->setCurrency('PHP')->setQuantity($val['order'])->setPrice($val['unit_price']);
+        // }
         
-        for($i = 0; $i <= (sizeof($payment_details->item_list)-1); $i++) {
-            $item_1[$i] = new Item();
-            $item_1[$i]->setName(ucwords($payment_details->item_list[$i]->name))->setCurrency('PHP')->setQuantity($payment_details->item_list[$i]->qty)->setPrice($payment_details->item_list[$i]->unit_price);
-        }
-        // $item_1->setName($Txn->txn_package_name)->setCurrency('PHP')->setQuantity(1)->setPrice($Txn->txn_amount);
-        // $item_1->setName('Item 1')->setCurrency('PHP')->setQuantity(1)->setPrice(25);
-        $item_list = new ItemList();
-        $item_list->setItems($item_1);
+        // $item_1->setName('Sunday Smoker')->setCurrency('PHP')->setQuantity(1)->setPrice($Txn->txn_amount);
+        // $item_1->setName('Order')->setCurrency('PHP')->setQuantity(1)->setPrice(25);
+        // $item_list = new ItemList();
+        // $item_list->setItems($item_1);
         
         $amount = new Amount();
         $amount->setCurrency('PHP')->setTotal($payment_details->total_amount);
         
         $transaction = new Transaction();
-        $transaction->setAmount($amount)->setItemList($item_list)->setDescription('Your Transaction Desc');
+        // $transaction->setAmount($amount)->setItemList($item_list)->setDescription('Your Transaction Desc');
+        $transaction->setAmount($amount)->setDescription('Your Transaction Desc');
 
         $redirect_urls = new RedirectUrls(); 
         $redirect_urls->setReturnUrl(route('AuthMemberPackagePaypalsuccess'))->setCancelUrl(route('AuthMemberPackagePaypalcancel'));
@@ -87,12 +90,13 @@ class Paypal
         
         $payment = new Payment();
         $payment->setIntent('Sale')->setPayer($payer)->setRedirectUrls($redirect_urls)->setTransactions(array($transaction));
-        
+
         try {
             $payment->create($this->_api_context);
         }
         catch (\PayPal\Exception\PPConnectionException $ex) 
         {
+           
             if (\Config::get('app.debug')) 
             {
                 $return['status'] = 0; $return['message'] = "Connection timeout. Please contact the administrator"; $return['error'] = $error['message']; $return['link'] = ''; return response()->json($return);
@@ -102,7 +106,7 @@ class Paypal
                 $return['status'] = 0; $return['message'] = "Unknown error occurred (Paypal). Please contact the administrator"; $return['error'] = $error['message']; $return['link'] = ''; return response()->json($return);
             }
         }
-        
+       
         foreach ($payment->getLinks() as $link) 
         {
             if ($link->getRel() == 'approval_url') 
@@ -111,38 +115,45 @@ class Paypal
                 break;
             }    
         }
-
-        $userinfo = User::create([
-            'fname' => $payment_details->user_info['fname'],
-            'lname' => $payment_details->user_info['lname'],
-            'mobile' => $payment_details->user_info['mobile'],
-            'email' => $payment_details->user_info['email'],
-            'address1' => $payment_details->user_info['address'],
-            'address2' => $payment_details->user_info['address'],
-            'city' => $payment_details->user_info['city'],
-            'province' => $payment_details->user_info['province'],
-        ]);
         
+        $dateSelected = CalendarCapacity::where('from_date', $payment_details['date'])->first();
+        $collectDailyCapacity = array();
+        foreach($payment_details['item_info']->meat_list as $meatkey => $meatvalue) {
+            $dailyCapacity = $this->computeDailyCapacity($meatvalue->order, $meatvalue->max_pcs_per_tray);
+            array_push($collectDailyCapacity, $dailyCapacity);
+        }
+        $capacityRemaining = $this->computeRemainingTray($dateSelected->tray_remaining, array_sum($collectDailyCapacity));
         $order = Order::create([
             "paymentid" => $payment->getId(),
-            'userid' => $userinfo->id,
-            'fname' => $userinfo->fname,
-            'lname' => $userinfo->lname,
+            'userid' => $payment_details['user_info']->id,
+            'fname' => $payment_details['user_info']->fname,
+            'lname' => $payment_details['user_info']->lname,
             "status" => 0,
             "total_price" => $payment_details->total_amount,
-            "tray_remaining" => (float)$payment_details->tray_remaining,
+            "tray_remaining" => (float)$capacityRemaining->exact_amount,
             "payment_used" => "paypal",
-            "trayid" => (int)$payment_details->tray_id
+            "trayid" => (int)$dateSelected->id
         ]);
-        for($i = 0; $i <= (sizeof($payment_details->item_list)-1); $i++) {
+ 
+        foreach($payment_details['item_info']->sidedish_list as $meatid => $sidedishes) {
             OrderItem::create([
-                'foodid'=>$payment_details->item_list[$i]->id,
-                'foodname'=>$payment_details->item_list[$i]->name,
+                'foodid'=>$payment_details['item_info']->meat_list[$meatid]->id,
+                'foodname'=>$payment_details['item_info']->meat_list[$meatid]->name,
                 'orderid'=> $order->id,
-                'quantity'=>$payment_details->item_list[$i]->qty
+                'quantity'=>$payment_details['item_info']->meat_list[$meatid]->order
             ]);
+            foreach($sidedishes as $sidedishid => $sidedish) {
+                if($sidedish != (object)array()) {
+                    OrderItem::create([
+                        'foodid'=>$payment_details['item_info']->sidedish_list[$meatid][$sidedishid]->id,
+                        'foodname'=>$payment_details['item_info']->sidedish_list[$meatid][$sidedishid]->name,
+                        'orderid'=> $order->id,
+                        'quantity'=>$payment_details['item_info']->sidedish_list[$meatid][$sidedishid]->order
+                    ]);
+                }
+            }
         }
-
+       
         if (isset($redirect_url)) 
         {
             $return['status'] = 1; $return['message'] = 'Redirecting to paypal'; $return['link'] = $redirect_url; return response()->json($return);

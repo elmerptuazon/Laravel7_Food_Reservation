@@ -268,7 +268,6 @@ class PackageController extends Controller
         if(isset($order->paymentid))
         {
             OrderItem::where('orderid', $order->id)->delete();
-            User::where('id', $order->userid)->delete();
             $order->delete();
             // $CheckoutSuccess = new CheckoutHandler; $CheckoutSuccess->success($Txn->txn_id);
         }

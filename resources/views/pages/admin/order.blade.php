@@ -81,7 +81,6 @@ $( document ).ready(function() {
             type: "DELETE",
             url: "{{ url('admin/order/')}}"+ '/' + this.id,
             success: function(data) {
-              console.log(data)
                 if(data.status) {
                     location.reload();
                     $('.successText').show();

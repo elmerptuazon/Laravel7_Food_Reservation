@@ -23,7 +23,9 @@
 @push('scripts')
 <script>
     $( document ).ready(function() {
-        
+      sessionStorage.removeItem('FOOD_LIST');
+      sessionStorage.removeItem('CAPACITY_DATE');
+      sessionStorage.removeItem('CART_COUNT');
     });
 </script>
 @endpush

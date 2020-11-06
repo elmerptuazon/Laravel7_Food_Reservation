@@ -13,7 +13,7 @@
           <a href="{{ url('admin/order') }}" style="color:#000000;" class="navbar-brand"><b>ADMIN</b></a>
           </div>
           <div class="col-2">
-          <i class="fa fa-shopping-cart fa-3x" style="color:#b50e35" class="navbar-brand"></i>
+          <!-- <i class="fa fa-shopping-cart fa-3x" style="color:#b50e35" class="navbar-brand"></i> -->
           </div>
             </div>
 

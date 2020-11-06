@@ -289,7 +289,6 @@ class PackageCheckoutController extends Controller
         if(isset($order->paymentid))
         {
             OrderItem::where('orderid', $order->id)->delete();
-            User::where('id', $order->userid)->delete();
             $order->delete();
         }
 
@@ -304,7 +303,6 @@ class PackageCheckoutController extends Controller
         if(isset($order->paymentid))
         {
             OrderItem::where('orderid', $order->id)->delete();
-            User::where('id', $order->userid)->delete();
             $order->delete();
         }
 
