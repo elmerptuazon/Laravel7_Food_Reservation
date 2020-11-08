@@ -19,7 +19,7 @@ h1 { text-align: center; font-size: 16px; }
     margin-bottom: 30px;
 }
 .card-small .thumbnail {
-    min-height: 200px;
+    min-height: 30vh;
 }
 
 .card .thumbnail {
@@ -313,13 +313,17 @@ input:disabled{
                     <span class="badge badge-pill badge-warning" style="height: max-content; margin-top: 5px;"><span id="meatleft">{{$food->current_max_pcs -1}}</span> left</span>  
                 </div>
                 <div class="clearfix"></div>
+                <h3>{{ ucwords($food->name)}}</h3>
+                <p class="rwd_line">{{ wordwrap($food->description, 10, "\n", true)}}</p>
+
         </div>
-        <div class="card-info">
-            <div class="moving" style="overflow-x: scroll;">
-                    <h3>{{ ucwords($food->name)}}</h3>
-                    <p class="rwd_line">{{ wordwrap($food->description, 10, "\n", true)}}</p>
+        <!-- <div class="card-info">
+            <div class="moving">
+                            <h3>{{ ucwords($food->name)}}</h3>
+                <p class="rwd_line">{{ wordwrap($food->description, 10, "\n", true)}}</p>
+
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 
@@ -341,13 +345,14 @@ input:disabled{
                     <span class="badge badge-pill badge-warning" style="height: max-content; margin-top: 5px;"><span id="sidedishleft_{{$val->id}}">{{$val->max_pcs_per_tray}}</span> left</span>  
                 </div>
                 <div class="clearfix"></div>
+                <h3>{{ ucwords($val->name)}}</h3>
+                <p class="rwd_line">{{ wordwrap($val->description, 10, "\n", true)}}</p>
         </div>
-        <div class="card-info">
+        <!-- <div class="card-info">
             <div class="moving" style="overflow-x: scroll;">
-                    <h3>{{ ucwords($val->name)}}</h3>
-                    <p class="rwd_line">{{ wordwrap($val->description, 10, "\n", true)}}</p>
+                    
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 @endforeach
@@ -371,13 +376,15 @@ $( document ).ready(function() {
 
     let parseFoodList = JSON.parse(sessionFoodList);
 
-        function countOrders(orders) {
+    function countOrders(orders) {
         let labelCounter = 0;
         let sidedish = orders.sidedish
 
         for(let value in sidedish) {
+            console.log(parseInt(orders.meat[value]))
             labelCounter += parseInt(orders.meat[value])
             for(let value2 in sidedish[value]) {
+                console.log(parseInt(sidedish[value][value2]))
             labelCounter += parseInt(sidedish[value][value2])
             }      
         }
@@ -433,7 +440,8 @@ $( document ).ready(function() {
         sessionStorage.setItem('FOOD_LIST', JSON.stringify(FOOD_LIST));
         let cart_data = sessionStorage.getItem("FOOD_LIST");
         $('#session_cart_data').val(cart_data);
-        sessionStorage.setItem('CART_COUNT', countOrders(parseFoodList))
+        let parseCart_Data = JSON.parse(cart_data);
+        sessionStorage.setItem('CART_COUNT', countOrders(parseCart_Data))
         window.location.href = "{{url('order')}}"+ "/" + food_objects.meatId;
     })
 });

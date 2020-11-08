@@ -45,6 +45,10 @@ class CartController extends Controller
             return view('pages.cart');
         }else if($request->cart_data == "undefined") {
             return view('pages.cart');
+        }else if($convertFoodList->meat == (object)array()) {
+            return view('pages.cart');
+        }else if($convertFoodList->sidedish == (object)array()) {
+            return view('pages.cart');
         }
         
         $getFoodData = $this->getMeatAndSidedish($convertFoodList);

@@ -13,19 +13,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::get('/', 'MainController@index')->name('customer_home');
+Route::resource('food', FoodItemController::class,)->only([
+    'show',
+]);
+Route::resource('cart', CartController::class,)->only([
+    'index', 'store'
+]);
+
 // Route::get('/check', function() {
 //     return view('paypal.success');
 // });
 Route::group(['prefix'=>'/', 'middleware'=>['checkiflogin']], function() {
-    Route::resource('food', FoodItemController::class,)->only([
-        'show',
-    ]);
     Route::resource('order', OrderController::class,)->only([
         'show', 'store',
     ]);
-    Route::resource('cart', CartController::class,)->only([
-        'index', 'store'
-    ]);
+    
     Route::resource('payment', PaymentController::class,);
 
     Route::post('order/validation', 'OrderController@validateOrder');

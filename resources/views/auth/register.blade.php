@@ -1,9 +1,5 @@
 @extends('index')
 
-@section('custom_style')
-<!-- <link rel="stylesheet" href="https://getbootstrap.com/docs/4.3/examples/sign-in/signin.css"> -->
-@endsection
-
 @section('content')
 
 <div class="row justify-content-center">

@@ -6,7 +6,7 @@
   <a class="navbar-brand" href="/"><img src="{{ asset("/images/sample_logo.jpg") }}" alt="Beef Short Ribs" width="40" height="40">
 </a>
   
-  <a class="navbar-brand" href="{{url('cart')}}"
+  <a class="navbar-brand" id="cart_anchor_tag" href="{{url('cart')}}"
       onclick="event.preventDefault();
                     document.getElementById('cart-form').submit();">
       <i class="fa fa-shopping-cart fa-2x" style="color:#b50e35"></i>

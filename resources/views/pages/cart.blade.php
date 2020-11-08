@@ -449,8 +449,8 @@ a.remove:hover {
         <div class="cartSection">
         <img src="{{ asset("/images/". $meat_list[$meatid]->image . "." . $meat_list[$meatid]->image_type)}}" alt="{{ ucwords($meat_list[$meatid]->name)}}" class="itemImg" />
           {{--<!-- <p class="itemNumber">#QUE-007544-002</p> -->--}}
-          <h5 class="mb-0">{{$meat_list[$meatid]->name}} <small><i><a href=# style="color:red">remove</a></i></small></h5>
-           <p class="mb-0"> <input type="text"  class="qty" id="meat_qty_{{$meat_list[$meatid]->id}}" value="{{$meat_list[$meatid]->order}}" disabled/> x &#x20B1;{{number_format($meat_list[$meatid]->unit_price,2)}}</p>
+          <h5 class="mb-0">{{$meat_list[$meatid]->name}} <small><i><a href=# id="meat_qty_{{$meat_list[$meatid]->id}}" style="color:red">remove</a></i></small></h5>
+           <p class="mb-0"> <input type="text"  class="qty"  value="{{$meat_list[$meatid]->order}}" disabled/> x &#x20B1;{{number_format($meat_list[$meatid]->unit_price,2)}}</p>
         
          {{-- <!-- <p class="stockStatus"> In Stock</p> -->--}}
         </div>  
@@ -466,8 +466,8 @@ a.remove:hover {
                 <div class="cartSection">
                 <img src="{{ asset("/images/". $sidedish_list[$meatid][$sidedishid]->image . "." . $sidedish_list[$meatid][$sidedishid]->image_type)}}" alt="{{ ucwords($sidedish_list[$meatid][$sidedishid]->name)}}" class="itemImg" />
                 <!-- <p class="itemNumber">#QUE-007544-002</p> -->
-                <h5>{{$sidedish_list[$meatid][$sidedishid]->name}} <small><i><a href=# style="color:red">remove</a></i></small></h5>
-                <p> <input type="text" class="qty" id="sidedish_qty_{{$meatid}}_{{$sidedish_list[$meatid][$sidedishid]->id}}" value="{{$sidedish_list[$meatid][$sidedishid]->order}}" disabled/> x &#x20B1;{{number_format($sidedish_list[$meatid][$sidedishid]->unit_price,2)}}</p>
+                <h5>{{$sidedish_list[$meatid][$sidedishid]->name}} <small><i><a href=# id="sidedish_qty_{{$meatid}}_{{$sidedish_list[$meatid][$sidedishid]->id}}" style="color:red">remove</a></i></small></h5>
+                <p> <input type="text" class="qty"  value="{{$sidedish_list[$meatid][$sidedishid]->order}}" disabled/> x &#x20B1;{{number_format($sidedish_list[$meatid][$sidedishid]->unit_price,2)}}</p>
                 
                 <!-- <p class="stockStatus"> In Stock</p> -->
                 </div>  
@@ -492,29 +492,6 @@ a.remove:hover {
        
     </ul>
   </div>
-
-  {{--<div class="promoCode"><label for="promo">Have A Promo Code?</label><input type="text" name="promo" placholder="Enter Code" />
-  <a href="#" class="btn"></a></div>
-  
-
-
-
-  <div class="container">
-        <div class="row">
-            <div class="col-12 text-center pt-2 pb-2">
-            <strong>ATTENTION</strong> <i class="fa fa-exclamation-triangle" style="color:#b50e35"></i>  
-            </div>
-            <div class="col-12 text-center pb-2">
-                Due to the high-demand of Sunday Smoker BBQs,
-                the next date we can deliver will be on 
-                <u>{{ \Carbon\Carbon::now()->addDays(1)->format('F d, Y') }}</u>
-            </div>
-        
-        </div>
-    </div>
-
-
-  --}}
   
   <div class="subtotal cf">
     <ul>
@@ -556,6 +533,49 @@ a.remove:hover {
 <script>
 $( document ).ready(function() {
   let sessionFoodList = sessionStorage.getItem("FOOD_LIST");
+
+  let parseFoodList = JSON.parse(sessionFoodList);
+
+  function countOrders(orders) {
+        let labelCounter = 0;
+        let sidedish = orders.sidedish
+
+        for(let value in sidedish) {
+            labelCounter += parseInt(orders.meat[value])
+            for(let value2 in sidedish[value]) {
+            labelCounter += parseInt(sidedish[value][value2])
+            }      
+        }
+        return labelCounter;
+    }
+
+
+  for(let meatid in parseFoodList.meat) {
+    $('#meat_qty_'+meatid).on('click', function() {
+      delete parseFoodList.meat[meatid];
+      delete parseFoodList.sidedish[meatid];
+      sessionStorage.setItem("FOOD_LIST", JSON.stringify(parseFoodList));
+      let newSessionFoodList = sessionStorage.getItem("FOOD_LIST");
+      sessionStorage.setItem('CART_COUNT', countOrders(parseFoodList))
+      $.post( "{{url('cart')}}",{_token: "{{ csrf_token() }}", cart_data: newSessionFoodList}, function( data ) {
+        $('html').html( data );
+      });
+    })
+
+    for(let sidedishid in parseFoodList.sidedish[meatid]) {
+      $('#sidedish_qty_'+meatid+'_'+sidedishid).on('click', function() {
+        parseFoodList.sidedish[meatid][sidedishid] = 0;
+        sessionStorage.setItem("FOOD_LIST", JSON.stringify(parseFoodList));
+        let newSessionFoodList = sessionStorage.getItem("FOOD_LIST");
+        sessionStorage.setItem('CART_COUNT', countOrders(parseFoodList))
+        $.post( "{{url('cart')}}",{_token: "{{ csrf_token() }}", cart_data: newSessionFoodList}, function( data ) {
+          $('html').html( data );
+        });
+      })
+    }
+   
+  }
+  console.log(parseFoodList)
 
   let capacity_date = $('#calendar_capacity').length == 0 ? moment().format("YYYY-MM-DD") : $('#calendar_capacity').data("field-id");    
    
