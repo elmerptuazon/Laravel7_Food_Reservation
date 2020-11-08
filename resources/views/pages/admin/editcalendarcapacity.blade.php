@@ -34,7 +34,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="inputGroup-sizing-sm">Date</span>
                     </div>
-                    <input id="selectedDate" placeholder="Selected date" type="text" class="form-control datepicker" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                    <input id="selectedDate" placeholder="Selected date" type="text" class="form-control datepicker" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled>
                 </div>
             </div>
         </div>
@@ -75,7 +75,7 @@ $( document ).ready(function() {
         $.ajax( {
             type: "PUT",
             url: "{{ url('admin/calendar_capacity/'.$calendarcap->id)}}",
-            data: { traycap: $('#traycapacity').val(), trayremaining: $('#trayremaining').val(), date: $('#selectedDate').val() },
+            data: {_token: "{{ csrf_token() }}", traycap: $('#traycapacity').val(), trayremaining: $('#trayremaining').val(), },
             success: function(data) {
                 if(data.status) {
                     location.reload();

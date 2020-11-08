@@ -75,6 +75,11 @@
 @push('scripts')
 <script>
 $( document ).ready(function() {
+  $.ajaxSetup({
+    headers: {
+          'X-CSRF-TOKEN': "{{ csrf_token() }}",
+        }
+    });
   $('.deleteItem').on('click', function() {
     // console.log("{{ url('admin/calendar_capacity/')}}"+ '/' + this.id,)
     $.ajax( {

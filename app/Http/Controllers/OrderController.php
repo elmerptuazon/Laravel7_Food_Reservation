@@ -167,8 +167,8 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = Validator::make($request->all(), [
-            'paid' => 'required|',
-            'totalfee' => 'required|',
+            'paid' => 'required',
+            'totalfee' => 'required',
             'date' => 'required',
         ]);
 

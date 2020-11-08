@@ -103,22 +103,13 @@ class CalendarCapacityController extends Controller
     {
         $validatedData = Validator::make($request->all(), [
             'traycap' => 'required|numeric',
-            'date' => 'required',
         ]);
 
         if ($validatedData->fails()) {
             return response()->view('errors.500', [], 500);
         }
 
-        $checkDateExists = CalendarCapacity::where('from_date', $request->date)->first();
-
-        if($checkDateExists) {
-            return response()->json(['error'=>'Date already exists. Please pick another one.', 'error_id'=>1]);
-        }
-
         CalendarCapacity::where('id', $id)->update([
-            'from_date' => $request->date,
-            'to_date' => $request->date,
             'tray_capacity' => $request->traycap,
             'tray_remaining'=> $request->trayremaining
         ]);

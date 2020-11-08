@@ -35,8 +35,8 @@
                         <span class="input-group-text" id="inputGroup-sizing-sm">Paid</span>
                     </div>
                     <select class="form-control" id="paid" name="cars">
-                        <option value="{{ $order->status }}">{{ $order->status ? 'Yes' : 'No' }}</option>
-                        <option value="{{ !$order->status }}">{{ !$order->status ? 'Yes' : 'No' }}</option>
+                        <option selected="selected" value="{{ $order->status }}">{{ $order->status ? 'Yes' : 'No' }}</option>
+                        <option value="{{ !$order->status != 0 ? 1 : 0  }}">{{ !$order->status ? 'Yes' : 'No' }}</option>
                     </select>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="inputGroup-sizing-sm">Delivery Fee</span>
                     </div>
-                    <input type="number" id="deliveryfee" class="form-control" value="{{ $order->delivery_fee }}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                    <input type="number" id="deliveryfee" class="form-control" value="{{ $order->delivery_fee != null ? $order->delivery_fee : 0 }}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
                 </div>
             </div>
             <div class="col-8">
@@ -94,7 +94,9 @@ let timeNow = moment().format("HH:mm:ss");
         capacity_date = moment(start).format("YYYY-MM-DD " + timeNow);
         // console.log("A new date selection was made: "+ label+ ' ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
   });
-
+console.log($('#paid').val())
+console.log($('#totalfee').val())
+console.log($('#selectedDate').val())
 
   $('#updateOrder').on('click', function() {
     $('#selectedDate').val(moment(capacity_date).format("YYYY-MM-DD " + timeNow));
@@ -103,6 +105,7 @@ let timeNow = moment().format("HH:mm:ss");
             type: "PUT",
             url: "{{ url('admin/order/'.$order->id)}}",
             data: { 
+                _token: "{{ csrf_token() }}",
                 paid: $('#paid').val(), 
                 deliveryfee: $('#deliveryfee').val(), 
                 totalfee: $('#totalfee').val(), 

@@ -136,6 +136,12 @@ $( document ).ready(function() {
     $('.warningText').hide();
     $('.successText').hide();
     let capacity_date = $('#date_latest').data("field-id");
+    
+    $.ajaxSetup({
+    headers: {
+          'X-CSRF-TOKEN': "{{ csrf_token() }}",
+        }
+    });
 
     $(".datepicker").daterangepicker({
         singleDatePicker: true,
@@ -161,7 +167,7 @@ $( document ).ready(function() {
     }else {
       $('.warningText').hide();
 
-      $.post( "{{ url('admin/calendar_capacity')}}", { traycap: $('#traycapacity').val(), date: $('#selectedDate').val() })
+      $.post( "{{ url('admin/calendar_capacity')}}", { _token: "{{ csrf_token() }}", traycap: $('#traycapacity').val(), date: $('#selectedDate').val() })
       .done(function( data ) {
         if(data.status) {
           $('#exampleModal').modal('toggle');

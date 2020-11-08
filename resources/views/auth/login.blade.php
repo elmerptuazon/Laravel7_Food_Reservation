@@ -27,12 +27,15 @@
             <strong>{{ $message }}</strong>
         </span>
     @enderror
-  <div class="checkbox mb-3">
+  <div class="checkbox">
     <label>
     <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}> Remember me
     </label>
   </div>
+  <p class="mt-2" style="float:left; margin-bottom: 10px;"><a href="{{ route('register') }}"><strong>{{ __('Register') }}</strong></a></p>
+  <br />
   <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+  
   <p class="mt-5 mb-3 text-muted">© 2020 Sunday Smoker</p>
   </div>
 </form>
