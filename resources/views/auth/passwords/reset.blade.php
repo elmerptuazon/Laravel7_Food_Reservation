@@ -1,4 +1,4 @@
-@extends('layouts.app')
+{{--@extends('layouts.app')
 
 @section('content')
 <div class="container">
@@ -62,4 +62,43 @@
         </div>
     </div>
 </div>
+@endsection--}}
+
+@extends('index')
+
+@section('content')
+<form method="POST" class="form-signin text-center" action="{{ route('password.update') }}">
+@csrf
+<div class="container">
+<input type="hidden" name="token" value="{{ $token }}">
+
+<img src="{{ asset("/images/sample_logo.jpg") }}" class="mb-4" alt="Beef Short Ribs" width="72" height="72">
+  <h1 class="h3 mb-3 font-weight-normal">{{ __('Reset Password') }}</h1>
+  <label for="inputEmail" class="sr-only">Email address</label>
+  <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email address" value="{{ $email }}" autofocus="" readonly>
+  @error('email')
+    <span class="invalid-feedback" role="alert">
+        <strong>{{ $message }}</strong>
+    </span>
+    @enderror
+    <br />
+  <label for="inputPassword" class="sr-only">{{ __('Password') }}</label>
+  <input id="password" type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" required autocomplete="new-password">
+
+  @error('password')
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
+    @enderror
+    <br />
+  <label for="inputPassword" class="sr-only">{{ __('Confirm Password') }}</label>
+  <input id="password-confirm" type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password" required autocomplete="new-password">
+
+  <br />
+  <button class="btn btn-lg btn-primary btn-block" type="submit">{{ __('Reset Password') }}</button>
+  <p class="mt-5 mb-3 text-muted">© 2020 Sunday Smoker</p>
+  </div>
+</form>
+
 @endsection
+
