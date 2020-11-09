@@ -35,6 +35,8 @@
   <p class="mt-2" style="float:left; margin-bottom: 10px;"><a href="{{ route('register') }}"><strong>{{ __('Register') }}</strong></a></p>
   <br />
   <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+  <br />
+  <p class="mt-2" style="float:left; margin-bottom: 10px;"><a href="/password/reset"><strong>{{ __('Forgot Password') }}</strong></a></p>
   
   <p class="mt-5 mb-3 text-muted">© 2020 Sunday Smoker</p>
   </div>
