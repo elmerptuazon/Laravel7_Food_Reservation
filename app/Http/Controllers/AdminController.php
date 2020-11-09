@@ -9,8 +9,11 @@ class AdminController extends Controller
 {
     
     
-    public function paymayaTest(Request $request) {
-        $check = new Paymaya;
-        return $check->paymayaCheckout($request->input('num'));
-    } 
+    public function loginIndex() {
+        return view('auth.admin_login');
+    }
+
+    public function registerIndex() {
+        return view('auth.admin_register');
+    }
 }

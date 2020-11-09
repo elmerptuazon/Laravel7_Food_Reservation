@@ -20,9 +20,8 @@ Route::resource('cart', CartController::class,)->only([
     'index', 'store'
 ]);
 
-// Route::get('/check', function() {
-//     return view('paypal.success');
-// });
+Route::post('order/validation', 'OrderController@validateOrder');
+
 Route::group(['prefix'=>'/', 'middleware'=>['checkiflogin']], function() {
     Route::resource('order', OrderController::class,)->only([
         'show', 'store',
@@ -30,7 +29,6 @@ Route::group(['prefix'=>'/', 'middleware'=>['checkiflogin']], function() {
     
     Route::resource('payment', PaymentController::class,);
 
-    Route::post('order/validation', 'OrderController@validateOrder');
 });
 
 Route::group(['prefix'=>'paypal', 'middleware'=>['checkiflogin']], function() {
@@ -44,7 +42,9 @@ Route::group(['prefix'=>'paymaya', 'middleware'=>['checkiflogin']], function() {
     Route::get('/client/package/checkout/cancel', 'Front\PackageCheckoutController@packageCheckoutCancel')->name('AuthMemberPackageCheckoutCancel');
 });
 
-Route::group(['prefix'=>'admin', 'middleware' => ['checkiflogin', 'checkifadmin']], function() {
+Route::get('/admin', 'AdminController@loginIndex');
+Route::get('/admin/register', 'AdminController@registerIndex');
+Route::group(['prefix'=>'admin', 'middleware' => ['checkifadmin']], function() {
     Route::resources([
         'food' => FoodItemController::class,
         'order' => OrderController::class,

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
+use Illuminate\Support\Facades\URL;
 
 class LoginController extends Controller
 {
@@ -36,11 +37,11 @@ class LoginController extends Controller
             return '/admin/order';
             break;
           case 'customer':
-            return '/';
+            return URL::previous();
             break; 
       
           default:
-            return '/';
+            return URL::previous();
           break;
         }
       }

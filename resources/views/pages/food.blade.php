@@ -328,11 +328,12 @@ input:disabled{
 </div>
 
 <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
-<h5>Sidedish</h5>
+<h5>SIDEDISH</h5>
 </div>
+<div class="container">
 
 @foreach($sidedish as $val)
-<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+{{--<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
 <div class="card card-small">
         <div class="thumbnail">       
         <div id="sidedish_max_pcs{{$val->id}}" data-field-id="{{$val->max_pcs_per_tray}}" ></div>
@@ -354,8 +355,31 @@ input:disabled{
             </div>
         </div> -->
     </div>
-</div>
+</div>--}}
+
+  <div class="row">
+  <div id="sidedish_max_pcs{{$val->id}}" data-field-id="{{$val->max_pcs_per_tray}}" ></div>
+    <div class="col-3 col-lg-4">
+    <img alt="{{ ucwords($val->name)}}" src="{{ asset("/images/". $val->image . "." . $val->image_type)}}" width="100" height="100">
+    </div>
+    <div class="col-9 col-sm-4">
+    <h5>{{ ucwords($val->name)}}</h5>
+                <div class="qty mt-2">
+                    <span onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus bg-dark sumofsidedish_{{$val->id}}">-</span>
+                    <input type="number" class="count" min="0" max="{{$val->max_pcs_per_tray}}" value="0" id="sidedish_{{$val->id}}" disabled>
+                    <span onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus bg-dark sumofsidedish_{{$val->id}}">+</span>
+                    <span class="badge badge-pill badge-warning" style="height: max-content; margin-top: 5px;"><span id="sidedishleft_{{$val->id}}">{{$val->max_pcs_per_tray}}</span> left</span>  
+                </div>
+
+    </div>
+    <div class="col-12 col-lg-4">
+    <p class="rwd_line">{{ wordwrap($val->description, 10, "\n", true)}}</p>
+    </div>
+
+  </div>
+
 @endforeach
+</div>
 <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10" style="padding-bottom: 10px;">
         <a href="/"><button type="button" style="background-color:#474545;" class="btn button-border">
             <span style="color: white;">CANCEL</span>
@@ -381,10 +405,8 @@ $( document ).ready(function() {
         let sidedish = orders.sidedish
 
         for(let value in sidedish) {
-            console.log(parseInt(orders.meat[value]))
             labelCounter += parseInt(orders.meat[value])
             for(let value2 in sidedish[value]) {
-                console.log(parseInt(sidedish[value][value2]))
             labelCounter += parseInt(sidedish[value][value2])
             }      
         }

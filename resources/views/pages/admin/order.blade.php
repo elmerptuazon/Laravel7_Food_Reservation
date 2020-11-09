@@ -81,7 +81,7 @@ $( document ).ready(function() {
         }
     });
   $('.deleteItem').on('click', function() {
-    // console.log("{{ url('admin/calendar_capacity/')}}"+ '/' + this.id,)
+    
     $.ajax( {
             type: "DELETE",
             url: "{{ url('admin/order/')}}"+ '/' + this.id,

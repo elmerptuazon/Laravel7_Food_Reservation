@@ -549,7 +549,7 @@ $( document ).ready(function() {
         return labelCounter;
     }
 
-
+if(parseFoodList != null) {
   for(let meatid in parseFoodList.meat) {
     $('#meat_qty_'+meatid).on('click', function() {
       delete parseFoodList.meat[meatid];
@@ -575,7 +575,8 @@ $( document ).ready(function() {
     }
    
   }
-  console.log(parseFoodList)
+}
+
 
   let capacity_date = $('#calendar_capacity').length == 0 ? moment().format("YYYY-MM-DD") : $('#calendar_capacity').data("field-id");    
    
@@ -592,6 +593,25 @@ $( document ).ready(function() {
         },
     }, function(start, end, label) {
         capacity_date = start.format('YYYY-MM-DD');
+
+        $.post( "{{ url('order/validation') }}", {
+        _token: "{{ csrf_token() }}", 
+        cart_data: sessionFoodList, 
+        date: capacity_date
+    }).done(function( data ) {
+      
+        if(data.error) {
+          if(data.error_id == 1) {
+                alert(data.error)
+                return false;
+            }else {
+                alert(data.error)
+                return false;
+            }
+        }else {
+          sessionStorage.setItem('CAPACITY_DATE', JSON.stringify(capacity_date));
+        }
+      });
         
         // console.log("A new date selection was made: "+ label+ ' ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
   });

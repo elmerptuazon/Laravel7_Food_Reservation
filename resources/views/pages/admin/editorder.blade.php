@@ -94,9 +94,6 @@ let timeNow = moment().format("HH:mm:ss");
         capacity_date = moment(start).format("YYYY-MM-DD " + timeNow);
         // console.log("A new date selection was made: "+ label+ ' ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
   });
-console.log($('#paid').val())
-console.log($('#totalfee').val())
-console.log($('#selectedDate').val())
 
   $('#updateOrder').on('click', function() {
     $('#selectedDate').val(moment(capacity_date).format("YYYY-MM-DD " + timeNow));

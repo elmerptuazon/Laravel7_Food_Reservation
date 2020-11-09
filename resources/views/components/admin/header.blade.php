@@ -19,18 +19,19 @@
 
         <div class="collapse navbar-collapse" id="navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><strong><a href="{{ url('admin/order') }}" style="color:#b50e35;">Orders</a></strong></li>
-            <li><strong><a href="{{ url('admin/calendar_capacity') }}" style="color:#b50e35;">Capacity/Inventory</a></strong></li>
+          <li><strong><a href="{{ url('admin/order') }}" style="color:#b50e35;">Home</a></strong></li>
             @guest
                 <li class="nav-item">
-                <strong><a class="nav-link" style="color:#b50e35;" href="{{ route('login') }}">{{ __('Login') }}</a></strong>
+                <strong><a class="nav-link" style="color:#b50e35;" href="/admin">{{ __('Login') }}</a></strong>
                 </li>
                 @if (Route::has('register'))
                     <li class="nav-item">
-                    <strong><a class="nav-link" style="color:#b50e35;" href="{{ route('register') }}">{{ __('Register') }}</a></strong>
+                    <strong><a class="nav-link" style="color:#b50e35;" href="/admin/register">{{ __('Register') }}</a></strong>
                     </li>
                 @endif
             @else
+                <li><strong><a href="{{ url('admin/order') }}" style="color:#b50e35;">Orders</a></strong></li>
+                <li><strong><a href="{{ url('admin/calendar_capacity') }}" style="color:#b50e35;">Capacity/Inventory</a></strong></li>
                 <li class="nav-item dropdown">
 
                   <strong><a class="nav-link" style="color:#b50e35;" href="{{ route('logout') }}"

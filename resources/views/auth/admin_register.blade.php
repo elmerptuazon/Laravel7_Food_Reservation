@@ -1,4 +1,4 @@
-@extends('index')
+@extends('admin')
 
 @section('content')
 
@@ -9,9 +9,9 @@
 <h4>Register</h4>
 <form method="POST" action="{{ route('register') }}">
 @csrf
-<input type="hidden" name="role" value="customer" required>
 	<div class="form-row">
 		<div class="col form-group">
+        <input type="hidden" name="role" value="admin" required>
 			<label>First name </label>   
 		  	<input type="text" class="form-control @error('first_name') is-invalid @enderror" name="first_name" placeholder="" required>
             @error('first_name')

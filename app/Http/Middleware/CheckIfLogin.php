@@ -19,7 +19,8 @@ class CheckIfLogin
         if (Auth::check()) {
             return $next($request);
         }else {
-            return redirect()->route('login');
+            return response()->view('auth.login');
+            // return redirect()->route('login');
         }
         
     }
