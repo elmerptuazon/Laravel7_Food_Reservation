@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Route;
 
 class LoginController extends Controller
 {
@@ -31,17 +32,28 @@ class LoginController extends Controller
     // protected $redirectTo = RouteServiceProvider::HOME;
     public function redirectTo() {
         $role = Auth::user()->role; 
+
+        if(Route::has('/payment')) {
+          return '/payment';
+        }
         
         switch ($role) {
           case 'admin':
             return '/admin/order';
             break;
           case 'customer':
-            return URL::previous();
-            break; 
-      
+            // dd(URL::previous());
+            // dd($_SERVER['HTTP_REFERER'] == $_SERVER['HTTP_ORIGIN'] . '/payment');
+            if($_SERVER['HTTP_REFERER'] == $_SERVER['HTTP_ORIGIN'] . '/payment') {
+              return '/payment';
+              break;
+            }else {
+              return '/';
+              break; 
+            }
+
           default:
-            return URL::previous();
+            return '/';
           break;
         }
       }
