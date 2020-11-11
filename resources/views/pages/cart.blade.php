@@ -40,7 +40,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 body {
   color: #333;
   -webkit-font-smoothing: antialiased;
-  font-family: "Droid Serif", serif;
+  /* font-family: "Droid Serif", serif; */
 }
 
 img {
@@ -69,7 +69,7 @@ img {
 }
 
 .projTitle {
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
   font-weight: bold;
   text-align: center;
   font-size: 2em;
@@ -79,7 +79,7 @@ img {
   text-transform: uppercase;
 }
 .projTitle span {
-  font-family: "Droid Serif", serif;
+  /* font-family: "Droid Serif", serif; */
   font-weight: normal;
   font-style: italic;
   text-transform: lowercase;
@@ -91,13 +91,13 @@ img {
   border-bottom: 1px solid #D0D0D0;
 }
 .heading h1 {
-  font-family: "Droid Serif", serif;
+  /* font-family: "Droid Serif", serif; */
   font-size: 2em;
   float: left;
 }
 .heading a.continue:link, .heading a.continue:visited {
   text-decoration: none;
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
   letter-spacing: -.015em;
   font-size: .75em;
   padding: 1em;
@@ -134,7 +134,7 @@ img {
 .tableHead {
   display: table;
   width: 100%;
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
   font-size: .75em;
 }
 .tableHead li {
@@ -174,7 +174,7 @@ img {
 }
 .cart .items .cartSection h3 {
   font-size: 1em;
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: .025em;
@@ -182,7 +182,7 @@ img {
 
 .cart .items .cartSection h5 {
   font-size: .70em;
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: .025em;
@@ -193,7 +193,7 @@ img {
   display: inline-block;
   font-size: .85em;
   color: #777777;
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
 }
 .cart .items .cartSection p .quantity {
   font-weight: bold;
@@ -234,7 +234,7 @@ img {
 
 .special {
   display: block;
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
 }
 .special .specialContent {
   padding: 1em 1em 0;
@@ -247,12 +247,12 @@ img {
   font-size: 1.5em;
   margin-right: 1em;
   color: #6f6f6f;
-  font-family: helvetica, arial, sans-serif;
+  /* font-family: helvetica, arial, sans-serif; */
 }
 
 a.remove {
   text-decoration: none;
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
   color: #ffffff;
   font-weight: bold;
   background: #e0e0e0;
@@ -310,7 +310,7 @@ a.remove:hover {
 
 .btn:link, .btn:visited {
   text-decoration: none;
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
   letter-spacing: -.015em;
   font-size: 1em;
   padding: 1em 3em;
@@ -367,10 +367,10 @@ a.remove:hover {
   text-align: right;
 }
 .subtotal .totalRow .label {
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
   font-size: .85em;
   text-transform: uppercase;
-  color: #777;
+  /* color: #777; */
 }
 .subtotal .totalRow .value {
   letter-spacing: -.025em;
@@ -407,7 +407,7 @@ a.remove:hover {
   .cart .items .cartSection.qtyWrap:before {
     content: "QTY";
     display: block;
-    font-family: "Montserrat", sans-serif;
+    /* font-family: "Montserrat", sans-serif; */
     padding: .25em;
     font-size: .75em;
   }
@@ -602,10 +602,16 @@ if(parseFoodList != null) {
       
         if(data.error) {
           if(data.error_id == 1) {
-                alert(data.error)
+            $('#alert_popup').on('show.bs.modal', function () {
+              $('#alert_popup_title').text('Error')
+              $('#alert_popup_content').text(data.error);
+            }).modal('show');
                 return false;
             }else {
-                alert(data.error)
+                $('#alert_popup').on('show.bs.modal', function () {
+                  $('#alert_popup_title').text('Error')
+                  $('#alert_popup_content').text(data.error);
+                }).modal('show');
                 return false;
             }
         }else {
@@ -625,10 +631,16 @@ if(parseFoodList != null) {
       
         if(data.error) {
           if(data.error_id == 1) {
-                alert(data.error)
+                $('#alert_popup').on('show.bs.modal', function () {
+                  $('#alert_popup_title').text('Error')
+                  $('#alert_popup_content').text(data.error);
+                }).modal('show');
                 return false;
             }else {
-                alert(data.error)
+                $('#alert_popup').on('show.bs.modal', function () {
+                  $('#alert_popup_title').text('Error')
+                  $('#alert_popup_content').text(data.error);
+                }).modal('show');
                 return false;
             }
         }else {

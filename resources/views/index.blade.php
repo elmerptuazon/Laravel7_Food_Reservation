@@ -34,6 +34,10 @@
         vertical-align: top;
         margin-left: -10px; 
     }
+
+    #alert_popup {
+    top: 30%;
+}
     </style>
 </head>
 <body>
@@ -41,6 +45,7 @@
 @include('components/header')
 
 <div class="container pr-0 pl-0" style=" overflow-x: scroll; height: 90vh;">
+@include('components/alert_popup')
 @yield('content')
 </div>
 

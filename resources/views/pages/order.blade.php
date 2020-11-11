@@ -77,10 +77,16 @@ $('#submitOrder').on('click', function() {
             window.location.href =  "{{url('payment')}}"+"/?details="+JSON.stringify(data.details);
         }else if(data.error) {
             if(data.error_id == 1) {
-                alert(data.error)
+                $('#alert_popup').on('show.bs.modal', function () {
+                  $('#alert_popup_title').text('Error')
+                  $('#alert_popup_content').text(data.error);
+                }).modal('show');
                 return false;
             }else {
-                alert(data.error)
+                $('#alert_popup').on('show.bs.modal', function () {
+                  $('#alert_popup_title').text('Error')
+                  $('#alert_popup_content').text(data.error);
+                }).modal('show');
                 return false;
             }
         }

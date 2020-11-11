@@ -94,24 +94,26 @@
 
     <div class="row">
    
-        <div class="col-12">
+        <div class="col-6 pr-0">
         <h5>Payment Options</h5>
         </div>
-
+        <div class="col-6 pl-0">
+        <small>(<i>please pick one</i>)</small>
+        </div>
     </div>
 
     <div class="row">
 
         <div class="col-6">
-            <button type="button" style="background-color:#790F0F;" id="paypalBtn" class="btn button-border">
-                <span style="color: white;">PAYPAL</span>
-            </button>
+        <a href="#" id="paypalBtn">
+                <img src="{{ asset("/images/paypal_logo.png")}}" class="img-fluid" id="paypalBtn" alt="Buy now with PayPal" width=100 height=100 />
+            </a>
         </div>
 
         <div class="col-6">
-            <button type="button" style="background-color:#790F0F;" id="paymayaBtn" class="btn button-border">
-                <span style="color: white;">PAYMAYA</span>
-            </button>
+        <a href="#" id="paymayaBtn">
+                <img src="{{ asset("/images/paymaya_logo.png")}}" class="img-fluid"  alt="Buy now with Paymaya" width=150 height=200 />
+            </a>
         </div>
 
     </div>
@@ -135,7 +137,10 @@
                 if(data.status == 1) {
                     window.location.href = data.link;
                 }else {
-                    alert(data.message);
+                    $('#alert_popup').on('show.bs.modal', function () {
+                        $('#alert_popup_title').text('Error')
+                        $('#alert_popup_content').text(data.message);
+                    }).modal('show');
                 }
             });
 
@@ -151,7 +156,10 @@
                 if(data.status == 1) {
                     window.location.href = data.link;
                 }else {
-                    alert(data.message);
+                    $('#alert_popup').on('show.bs.modal', function () {
+                        $('#alert_popup_title').text('Error')
+                        $('#alert_popup_content').text(data.message);
+                    }).modal('show');
                 }
             });
 

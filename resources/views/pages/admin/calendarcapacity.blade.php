@@ -175,7 +175,10 @@ $( document ).ready(function() {
           $('.successText').show();
           setTimeout(function(){ $('.successText').fadeOut() }, 2000);
         }else {
-          alert(data.error)
+          $('#alert_popup').on('show.bs.modal', function () {
+              $('#alert_popup_title').text('Error')
+              $('#alert_popup_content').text(data.error);
+          }).modal('show');
         }
       });
 
