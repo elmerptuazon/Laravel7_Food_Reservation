@@ -5,7 +5,7 @@
         <h5 class="modal-title" id="alert_popup_title"></h5>
       </div>
       <div class="modal-body" >
-        <p id="alert_popup_content">Modal body text goes here.</p>
+        <p id="alert_popup_content">Server Error.</p>
       </div>
     </div>
   </div>

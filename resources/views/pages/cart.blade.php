@@ -536,6 +536,8 @@ $( document ).ready(function() {
 
   let parseFoodList = JSON.parse(sessionFoodList);
 
+  let getTotal = "{{number_format($total_order,2)}}";
+
   function countOrders(orders) {
         let labelCounter = 0;
         let sidedish = orders.sidedish
@@ -644,6 +646,7 @@ if(parseFoodList != null) {
                 return false;
             }
         }else {
+          sessionStorage.setItem('ORDER_TOTAL', JSON.stringify(getTotal));
           sessionStorage.setItem('CAPACITY_DATE', JSON.stringify(capacity_date));
           window.location.href = "{{url('/payment')}}"
         }

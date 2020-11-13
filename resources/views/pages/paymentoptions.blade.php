@@ -30,67 +30,54 @@
         </div>
     </div>
 
-<div class="row">
+    <div class="row">
+        <input type="hidden" id="user_input_id" value="{{$user_info->id}}">
+        <div class="col-12">
+            <label>Mobile</label>
+            <input type="number" id="user_input_mobile" class="form-control userInput" value="{{$user_info->mobile}}">
+        </div>
+        <div class="col-12">
+            <label>Address</label>
+            <input type="text" id="user_input_address1" class="form-control userInput" value="{{$user_info->address1}}">
+        </div>
+        <div class="col-6">
+                <label>City</label>
+                <select id="user_input_city" name="city" class="form-control userInput">
+                    <option value="{{$user_info->city}}" selected>{{ ucwords($user_info->city)}}</option>
+                    <option value="caloocan">{{ ucwords('caloocan')}}</option>
+                    <option value="las pinas">{{ ucwords('las pinas')}}</option>
+                    <option value="makati">{{ ucwords('makati')}}</option>
+                    <option value="mandaluyong">{{ ucwords('mandaluyong')}}</option>
+                    <option value="marikina">{{ ucwords('marikina')}}</option>
+                    <option value="muntinlupa">{{ ucwords('muntinlupa')}}</option>
+                    <option value="navotas">{{ ucwords('navotas')}}</option>
+                    <option value="paranaque">{{ ucwords('paranaque')}}</option>
+                    <option value="pasay">{{ ucwords('pasay')}}</option>
+                    <option value="pasig">{{ ucwords('pasig')}}</option>
+                    <option value="pateros">{{ ucwords('pateros')}}</option>
+                    <option value="quezon city">{{ ucwords('quezon city')}}</option>
+                    <option value="san juan">{{ ucwords('san juan')}}</option>
+                    <option value="taguig">{{ ucwords('taguig')}}</option>
+                    <option value="valenzuela">{{ ucwords('valenzuela')}}</option>
+                </select>
 
-            <div class="col-6">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><small>First Name</small></span>
-                    </div>
-                    <input type="text" id="fnameinput" class="form-control"  aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="{{$user_info->fname}}" readonly>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><small>Last Name</small></span>
-                    </div>
-                    <input type="text" id="lnameinput" class="form-control"  aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="{{$user_info->lname}}" readonly>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><small>Mobile No.</small></span>
-                    </div>
-                    <input type="number" id="mobileno" class="form-control"  aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="{{$user_info->mobile}}" readonly>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><small>Email</small></span>
-                    </div>
-                    <input type="text" id="emailinput" class="form-control"  aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="{{$user_info->email}}" readonly>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><small>Address</small></span>
-                    </div>
-                    <input type="text" id="addressinput" class="form-control"  aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="{{$user_info->address1}}" readonly>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><small>City</small></span>
-                    </div>
-                    <input type="text" id="cityinput" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="{{$user_info->city}}" readonly>        
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><small>Province</small></span>
-                    </div>
-                    <input type="text" id="provinceinput" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="{{$user_info->province}}" readonly>        
-                </div>
-            </div>
+        </div>
+        <div class="col-6">
+            <label>Province</label>
+            <input type="text" id="user_input_province" class="form-control userInput" name="province" value="{{ ucwords('metro manila')}}" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readonly>        
+        </div>
+    </div>
 
-        
+<div class="row" style="padding-top:10px;">
+   
+   <div class="col-6 pr-0">
+   <h5>TOTAL</h5>
+   </div>
+   <div class="col-6 pl-0">
+   &#x20B1; <span id="order_total"></span>
+   </div>
 </div>
+
 
     <div class="row">
    
@@ -126,42 +113,83 @@
     $( document ).ready(function() {
         let sessionFoodList = sessionStorage.getItem("FOOD_LIST");
         let sessionCapacityDate = sessionStorage.getItem("CAPACITY_DATE");
+        let sessionOrderTotal = sessionStorage.getItem("ORDER_TOTAL");
+        let parseOrderTotal = JSON.parse(sessionOrderTotal)
+
+
+        $('#order_total').text(parseOrderTotal);
 
         $('#paypalBtn').on('click', function() {
-            $.post( "{{ url('payment') }}", { 
-                _token: "{{ csrf_token() }}",
-                payment_used: 'paypal',
-                cart_data: sessionFoodList,
-                date: sessionCapacityDate
-            }).done(function( data ) {
-                if(data.status == 1) {
-                    window.location.href = data.link;
-                }else {
-                    $('#alert_popup').on('show.bs.modal', function () {
-                        $('#alert_popup_title').text('Error')
-                        $('#alert_popup_content').text(data.message);
-                    }).modal('show');
-                }
-            });
+            let newUser = {
+                id: $('#user_input_id').val(),
+                mobile: $('#user_input_mobile').val(),
+                address: $('#user_input_address1').val(),
+                city: $('#user_input_city').val(),
+                province: $('#user_input_province').val().toLowerCase(),
+            }
+
+            if($('#user_input_mobile').val() != '' && $('#user_input_address1').val() != '' && $('#user_input_city').val() != '') {
+                $.post( "{{ url('payment') }}", { 
+                    _token: "{{ csrf_token() }}",
+                    payment_used: 'paypal',
+                    cart_data: sessionFoodList,
+                    date: sessionCapacityDate,
+                    user_info: newUser
+                }).done(function( data ) {
+                    if(data.status == 1) {
+                        window.location.href = data.link;
+                    }else {
+                        $('#alert_popup').on('show.bs.modal', function () {
+                            $('#alert_popup_title').text('Error')
+                            $('#alert_popup_content').text(data.message);
+                        }).modal('show');
+                    }
+                });
+            }else {
+                $('#alert_popup').on('show.bs.modal', function () {
+                    $('#alert_popup_title').text('Error')
+                    $('#alert_popup_content').text('Please fill up all information field.');
+                }).modal('show');
+            }
+
+            
 
         })
 
         $('#paymayaBtn').on('click', function() {
-            $.post( "{{ url('payment') }}", { 
-                _token: "{{ csrf_token() }}",
-                payment_used: 'paymaya',
-                cart_data: sessionFoodList,
-                date: sessionCapacityDate
-            }).done(function( data ) {
-                if(data.status == 1) {
-                    window.location.href = data.link;
-                }else {
-                    $('#alert_popup').on('show.bs.modal', function () {
-                        $('#alert_popup_title').text('Error')
-                        $('#alert_popup_content').text(data.message);
-                    }).modal('show');
-                }
-            });
+            let newUser = {
+                id: $('#user_input_id').val(),
+                mobile: $('#user_input_mobile').val(),
+                address: $('#user_input_address1').val(),
+                city: $('#user_input_city').val(),
+                province: $('#user_input_province').val().toLowerCase(),
+            }
+
+            
+            if($('#user_input_mobile').val() != '' && $('#user_input_address1').val() != '' && $('#user_input_city').val() != '') {
+                $.post( "{{ url('payment') }}", { 
+                    _token: "{{ csrf_token() }}",
+                    payment_used: 'paymaya',
+                    cart_data: sessionFoodList,
+                    date: sessionCapacityDate,
+                    user_info: newUser
+                }).done(function( data ) {
+                    if(data.status == 1) {
+                        window.location.href = data.link;
+                    }else {
+                        $('#alert_popup').on('show.bs.modal', function () {
+                            $('#alert_popup_title').text('Error')
+                            $('#alert_popup_content').text(data.message);
+                        }).modal('show');
+                    }
+                });
+            }else {
+                $('#alert_popup').on('show.bs.modal', function () {
+                    $('#alert_popup_title').text('Error')
+                    $('#alert_popup_content').text('Please fill up all information field.');
+                }).modal('show');
+            }
+            
 
         })
     });

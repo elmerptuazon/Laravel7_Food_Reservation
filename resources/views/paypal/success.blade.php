@@ -23,6 +23,7 @@
 @push('scripts')
 <script>
     $( document ).ready(function() {
+      sessionStorage.removeItem('ORDER_TOTAL');
       sessionStorage.removeItem('FOOD_LIST');
       sessionStorage.removeItem('CAPACITY_DATE');
       sessionStorage.removeItem('CART_COUNT');

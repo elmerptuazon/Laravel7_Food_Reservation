@@ -19,25 +19,25 @@ class UserSeeder extends Seeder
             [
                 'fname' => 'secret',
                 'lname' => 'lastname',
-                'mobile' => '19283759482',
+                'mobile' => '09283759482',
                 'email' => 'secret@gmail.com',
                 'password' => Hash::make('secret'),
                 'address1' => 'Lorem Ipsum 12',
                 'address2' => 'Lorem Ipsum 1432',
-                'city' => 1,
-                'province' => 'pangasinan cavite',
+                'city' => 'valenzuela',
+                'province' => 'metro manila',
             ],
             [
                 'fname' => 'secret',
                 'lname' => 'lastname',
-                'mobile' => '19283759482',
+                'mobile' => '09283759482',
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('admin'),
                 'role' => 'admin',
                 'address1' => 'Lorem Ipsum 12',
                 'address2' => 'Lorem Ipsum 1432',
-                'city' => 1,
-                'province' => 'pangasinan cavite',
+                'city' => 'pateros',
+                'province' => 'metro manila',
             ]
         );
         foreach ($users as $user) {
