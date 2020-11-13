@@ -35,6 +35,7 @@
 
                       <a class="nav-link" href="{{ route('logout') }}"
                           onclick="event.preventDefault();
+                                        sessionStorage.removeItem('ORDER_TOTAL');
                                         sessionStorage.removeItem('FOOD_LIST');
                                         sessionStorage.removeItem('CAPACITY_DATE');
                                         sessionStorage.removeItem('CART_COUNT');
